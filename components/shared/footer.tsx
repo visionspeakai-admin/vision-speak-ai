@@ -1,8 +1,39 @@
 import Link from 'next/link'
-import { Github, Linkedin, Twitter } from 'lucide-react'
+import { useState } from 'react'
+import { Github, Linkedin, Twitter, Send, Loader2, CheckCircle2 } from 'lucide-react'
+import { api } from '@/lib/api'
+import { getRecaptchaToken } from '@/components/providers/recaptcha-provider'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || isLoading) return
+    setIsLoading(true)
+    setStatus('idle')
+
+    try {
+      const captcha_token = await getRecaptchaToken('newsletter')
+      const response = await api.post('/newsletter/subscribe', {
+        email,
+        captcha_token,
+      })
+
+      if (response.status === 'success') {
+        setStatus('success')
+        setEmail('')
+      }
+    } catch (error) {
+      console.error('Newsletter error:', error)
+      setStatus('error')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const footerLinks = {
     Product: [
@@ -15,7 +46,7 @@ export function Footer() {
       { label: 'About', href: '#' },
       { label: 'Blog', href: '#' },
       { label: 'Careers', href: '#' },
-      { label: 'Contact', href: '#' },
+      { label: 'Contact', href: '/contact' },
     ],
     Developers: [
       { label: 'Documentation', href: '/developers' },
@@ -34,68 +65,95 @@ export function Footer() {
   return (
     <footer className="border-t border-white/10 bg-gradient-to-b from-transparent to-slate-950/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-          {/* Brand Column */}
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 font-bold text-lg mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-12 mb-16">
+          {/* Brand & Newsletter Column */}
+          <div className="md:col-span-2 space-y-6">
+            <Link href="/" className="flex items-center gap-2 font-bold text-lg">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <span className="text-obsidian-dark font-black text-sm">VS</span>
               </div>
               <span className="text-glow">VisionSpeak</span>
             </Link>
-            <p className="text-sm text-slate-400">
-              AI-powered Lip-Reading & Gesture Recognition powered by NVIDIA technology.
+            <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+              AI-powered Lip-Reading & Gesture Recognition powered by NVIDIA technology. Follow our journey.
             </p>
+
+            <div className="pt-4">
+              <h4 className="text-sm font-bold text-white mb-3">Subscribe to our newsletter</h4>
+              <form onSubmit={handleSubscribe} className="relative flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  required
+                  className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-cyan-500/50 transition-all"
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-obsidian-dark rounded-lg font-bold transition-all disabled:opacity-50"
+                >
+                  {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                </button>
+              </form>
+              {status === 'success' && (
+                <p className="text-[10px] text-lime-400 mt-2 flex items-center gap-1">
+                  <CheckCircle2 size={12} />
+                  Subscription confirmed!
+                </p>
+              )}
+              {status === 'error' && (
+                <p className="text-[10px] text-red-400 mt-2">
+                  Failed to subscribe. Please try again.
+                </p>
+              )}
+            </div>
+
             <div className="flex gap-3 mt-4">
-              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <Github size={18} />
+              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                <Github size={18} className="text-slate-400 hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <Linkedin size={18} />
+              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                <Linkedin size={18} className="text-slate-400 hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <Twitter size={18} />
+              <a href="#" className="p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                <Twitter size={18} className="text-slate-400 hover:text-white transition-colors" />
               </a>
             </div>
           </div>
 
           {/* Links Columns */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="font-semibold text-sm mb-4 text-white">{category}</h3>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="md:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {Object.entries(footerLinks).map(([category, links]) => (
+              <div key={category}>
+                <h3 className="font-bold text-xs uppercase tracking-widest mb-6 text-slate-500">{category}</h3>
+                <ul className="space-y-4">
+                  {links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500">
-            © {currentYear} VisionSpeakAI. All rights reserved.
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-[10px] text-slate-500 uppercase tracking-tighter">
+            © {currentYear} VisionSpeakAI. Engineered with NVIDIA TensorRT.
           </p>
-          <div className="flex gap-4 text-xs text-slate-500">
-            <a href="#" className="hover:text-slate-300 transition-colors">
-              Status Page
-            </a>
-            <span>•</span>
-            <a href="#" className="hover:text-slate-300 transition-colors">
-              System Status
-            </a>
-            <span>•</span>
-            <a href="#" className="hover:text-slate-300 transition-colors">
-              Send Feedback
-            </a>
+          <div className="flex gap-6 text-[10px] text-slate-500 uppercase tracking-tighter">
+            <a href="#" className="hover:text-slate-300 transition-colors">Documentation</a>
+            <a href="#" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-slate-300 transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>

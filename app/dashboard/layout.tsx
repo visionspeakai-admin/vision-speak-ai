@@ -16,6 +16,9 @@ import {
   Bell,
 } from 'lucide-react'
 
+import { useAuth } from '@/components/providers/auth-provider'
+import { useRouter } from 'next/navigation'
+
 const navItems = [
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard/overview' },
   { icon: BarChart3, label: 'Analytics', href: '/dashboard/analytics' },
@@ -27,14 +30,24 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { user, logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push('/auth/login')
+  }
+
+  const getInitials = (firstName?: string, lastName?: string) => {
+    return `${(firstName || 'U')[0]}${(lastName || '')[0] || ''}`.toUpperCase()
+  }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen glass-effect border-r border-white/10 transition-all duration-300 ${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } flex flex-col`}
+        className={`fixed left-0 top-0 h-screen glass-effect border-r border-white/10 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'
+          } flex flex-col`}
       >
         {/* Logo */}
         <div className="h-20 flex items-center justify-between px-4 border-b border-white/10">
@@ -71,7 +84,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Logout */}
         <div className="border-t border-white/10 p-4">
-          <button className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-red-500/10 text-slate-300 hover:text-red-400 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-red-500/10 text-slate-300 hover:text-red-400 transition-colors"
+          >
             <LogOut className="w-5 h-5" />
             {sidebarOpen && <span className="text-sm font-medium">Logout</span>}
           </button>
@@ -95,12 +111,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               {/* User Menu */}
               <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-white font-bold">
-                  J
-                </div>
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.username} className="w-10 h-10 rounded-full border border-white/20 object-cover" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                    {getInitials(user?.first_name, user?.last_name)}
+                  </div>
+                )}
                 <div className="hidden md:block">
-                  <p className="text-sm font-semibold text-white">John Doe</p>
-                  <p className="text-xs text-slate-400">Professional Plan</p>
+                  <p className="text-sm font-semibold text-white">{user?.first_name} {user?.last_name || ''}</p>
+                  <p className="text-xs text-slate-400 uppercase">{user?.current_plan || 'Free Plan'}</p>
                 </div>
               </div>
             </div>

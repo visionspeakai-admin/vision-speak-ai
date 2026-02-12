@@ -1,9 +1,35 @@
-'use client'
-
 import Link from 'next/link'
-import { TrendingUp, Zap, Users, AlertCircle } from 'lucide-react'
+import { TrendingUp, Zap, Users, AlertCircle, Loader2 } from 'lucide-react'
+import { useAuth } from '@/components/providers/auth-provider'
+import { useEffect, useState } from 'react'
+import { api } from '@/lib/api'
 
 export default function DashboardOverview() {
+  const { user } = useAuth()
+  const [recentActivity, setRecentActivity] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await api.get<any[]>('/payments')
+        if (response.status === 'success' && response.data) {
+          const activities = response.data.slice(0, 5).map(payment => ({
+            event: `Payment for ${payment.plan_name}`,
+            time: new Date(payment.paid_at).toLocaleDateString(),
+            status: payment.status === 'paid' ? 'success' : 'info'
+          }))
+          setRecentActivity(activities)
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchDashboardData()
+  }, [])
+
   const stats = [
     {
       label: 'API Calls (30d)',
@@ -39,19 +65,16 @@ export default function DashboardOverview() {
     },
   ]
 
-  const recentActivity = [
-    { event: 'API Key created', time: '2 hours ago', status: 'success' },
-    { event: 'Webhook configured', time: '5 hours ago', status: 'success' },
-    { event: 'Rate limit increased', time: '1 day ago', status: 'info' },
-    { event: 'Model v2.1 deployed', time: '3 days ago', status: 'success' },
+  const defaultActivity = [
+    { event: 'Account created', time: 'Just now', status: 'success' },
   ]
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="heading-lg text-white mb-2">Welcome back, John</h1>
-        <p className="text-slate-400">Here's what's happening with your API usage.</p>
+        <h1 className="heading-lg text-white mb-2">Welcome back, {user?.first_name || 'Explorer'}</h1>
+        <p className="text-slate-400">Here's what's happening with your account and API usage.</p>
       </div>
 
       {/* Stats Grid */}
@@ -80,8 +103,9 @@ export default function DashboardOverview() {
         {/* Usage Chart Placeholder */}
         <div className="lg:col-span-2 glass-effect p-8 rounded-xl">
           <h2 className="text-lg font-bold text-white mb-6">API Usage (30 days)</h2>
-          <div className="h-64 bg-black/20 rounded-lg flex items-center justify-center text-slate-500">
-            Chart visualization would render here
+          <div className="h-64 bg-black/20 rounded-lg flex items-center justify-center text-slate-500 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent" />
+            <p className="relative z-10 font-mono text-sm">Real-time usage metrics coming soon</p>
           </div>
         </div>
 
@@ -97,7 +121,7 @@ export default function DashboardOverview() {
                 Manage API Keys
               </Link>
               <Link
-                href="/developers"
+                href="/documentation"
                 className="block w-full px-4 py-2 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-center text-sm font-semibold text-white"
               >
                 API Docs
@@ -113,7 +137,7 @@ export default function DashboardOverview() {
 
           {/* Usage Summary */}
           <div className="glass-effect p-6 rounded-xl">
-            <h3 className="font-bold text-white mb-4">Plan Usage</h3>
+            <h3 className="font-bold text-white mb-4">Plan: <span className="text-cyan-400 uppercase">{user?.current_plan || 'Free'}</span></h3>
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -122,15 +146,6 @@ export default function DashboardOverview() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full w-4/5 bg-gradient-to-r from-cyan-400 to-cyan-600" />
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-slate-400">Storage</span>
-                  <span className="text-sm font-bold text-cyan-300">24GB / 100GB</span>
-                </div>
-                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-1/4 bg-gradient-to-r from-purple-400 to-purple-600" />
                 </div>
               </div>
             </div>
@@ -142,20 +157,23 @@ export default function DashboardOverview() {
       <div className="glass-effect p-8 rounded-xl">
         <h2 className="text-lg font-bold text-white mb-6">Recent Activity</h2>
         <div className="space-y-4">
-          {recentActivity.map((activity, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="animate-spin text-cyan-400" />
+            </div>
+          ) : (recentActivity.length > 0 ? recentActivity : defaultActivity).map((activity, index) => (
+            <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
               <div>
                 <p className="font-semibold text-white text-sm">{activity.event}</p>
                 <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
               </div>
               <div
-                className={`w-3 h-3 rounded-full ${
-                  activity.status === 'success'
-                    ? 'bg-green-500'
-                    : activity.status === 'info'
-                      ? 'bg-cyan-500'
-                      : 'bg-yellow-500'
-                }`}
+                className={`w-3 h-3 rounded-full ${activity.status === 'success'
+                  ? 'bg-green-500'
+                  : activity.status === 'info'
+                    ? 'bg-cyan-500'
+                    : 'bg-yellow-500'
+                  }`}
               />
             </div>
           ))}
@@ -163,13 +181,15 @@ export default function DashboardOverview() {
       </div>
 
       {/* Upgrade CTA */}
-      <div className="glass-effect-strong border-cyan-400/50 shadow-[0_0_30px_rgba(0,242,255,0.3)] p-8 rounded-xl text-center">
-        <h3 className="text-lg font-bold text-white mb-3">Need more capacity?</h3>
-        <p className="text-slate-400 mb-6">Upgrade your plan to unlock higher rate limits and advanced features.</p>
-        <button className="px-6 py-3 glow-button">
-          Upgrade Plan
-        </button>
-      </div>
+      {!user?.current_plan && (
+        <div className="glass-effect-strong border-cyan-400/50 shadow-[0_0_30px_rgba(0,242,255,0.3)] p-8 rounded-xl text-center">
+          <h3 className="text-lg font-bold text-white mb-3">Scale your application</h3>
+          <p className="text-slate-400 mb-6">Unlock higher rate limits and enterprise-grade features with our Pro plan.</p>
+          <Link href="/pricing" className="inline-block px-8 py-3 glow-button">
+            View Pricing
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,74 +1,72 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Navigation } from '@/components/shared/navigation'
 import { Footer } from '@/components/shared/footer'
 import { HeroSection } from '@/components/shared/hero-section'
 import { FadeInUp } from '@/components/animations/fade-in-up'
 import { ScrollReveal } from '@/components/animations/scroll-reveal'
 import { Check, Zap } from 'lucide-react'
+import { useAuth } from '@/components/providers/auth-provider'
+import { api } from '@/lib/api'
+import { useRouter } from 'next/navigation'
+
+interface Plan {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  price: number;
+  price_yearly: number | null;
+  features?: any[];
+}
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
-  const plans = [
-    {
-      name: 'Starter',
-      description: 'Perfect for testing and small-scale projects',
-      monthlyPrice: 99,
-      yearlyPrice: 1188,
-      cta: 'Start Free Trial',
-      highlighted: false,
-      features: [
-        'Up to 100,000 API calls/month',
-        '1 lip-reading model',
-        '1 gesture recognition model',
-        'Community support',
-        'Standard latency',
-        'Single region deployment',
-        'Rate limiting: 10 req/sec',
-      ],
-    },
-    {
-      name: 'Professional',
-      description: 'For production applications and growing teams',
-      monthlyPrice: 499,
-      yearlyPrice: 5988,
-      cta: 'Get Started',
-      highlighted: true,
-      badge: 'Most Popular',
-      features: [
-        'Up to 1M API calls/month',
-        'All lip-reading variants',
-        'All gesture recognition models',
-        'Priority email support',
-        'Sub-100ms latency (NVIDIA)',
-        'Multi-region deployment',
-        'Rate limiting: 100 req/sec',
-        'Custom model fine-tuning',
-        'SLA: 99.5%',
-      ],
-    },
-    {
-      name: 'Enterprise',
-      description: 'For large-scale, mission-critical deployments',
-      monthlyPrice: null,
-      yearlyPrice: null,
-      cta: 'Contact Sales',
-      highlighted: false,
-      features: [
-        'Unlimited API calls',
-        'All models + custom variants',
-        'Dedicated support team',
-        'Sub-50ms latency (A100 GPU)',
-        'Global deployment',
-        'Rate limiting: Unlimited',
-        'Advanced fine-tuning',
-        'SLA: 99.99%',
-        'On-premise deployment',
-        'Custom integrations',
-      ],
-    },
-  ]
+  const [plans, setPlans] = useState<Plan[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    fetchPlans()
+  }, [])
+
+  const fetchPlans = async () => {
+    try {
+      const response = await api.get<Plan[]>('/plans')
+      if (response.status === 'success' && Array.isArray(response.data)) {
+        setPlans(response.data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch plans:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCheckout = async (planId: number, interval: 'monthly' | 'yearly') => {
+    if (!isAuthenticated) {
+      router.push(`/auth/login?redirect=/pricing`)
+      return
+    }
+
+    try {
+      const response = await api.post<{ url: string }>('/subscriptions/checkout', {
+        plan_id: planId,
+        interval,
+        success_url: `${window.location.origin}/dashboard?checkout=success`,
+        cancel_url: `${window.location.origin}/pricing?checkout=cancelled`,
+      })
+
+      if (response.status === 'success' && response.data?.url) {
+        window.location.href = response.data.url
+      }
+    } catch (error) {
+      console.error('Checkout failed:', error)
+    }
+  }
 
   const addOns = [
     { name: 'GPU Acceleration (NVIDIA)', price: '+$50/month', description: 'RTX-powered latency optimization' },
@@ -102,9 +100,8 @@ export default function PricingPage() {
             style={{ backgroundColor: isYearly ? 'hsl(186, 100%, 50%)' : 'hsl(0, 0%, 15%)' }}
           >
             <span
-              className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
-                isYearly ? 'translate-x-9' : 'translate-x-1'
-              }`}
+              className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${isYearly ? 'translate-x-9' : 'translate-x-1'
+                }`}
             />
           </button>
           <span className={`text-sm font-medium transition-colors ${isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
@@ -113,67 +110,70 @@ export default function PricingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {plans.map((plan, index) => {
-            const displayPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice
-            const period = isYearly ? '/year' : '/month'
-            
-            return (
-              <FadeInUp key={index} delay={index * 0.1}>
-                <div
-                  className={`relative rounded-lg transition-all duration-300 card-modern ${
-                    plan.highlighted ? 'border-primary/60 md:scale-105' : ''
-                  }`}
-                >
-                  {/* Badge */}
-                  {plan.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold text-primary-foreground bg-primary">
-                      {plan.badge}
-                    </div>
-                  )}
+          {isLoading ? (
+            <div className="col-span-3 flex justify-center py-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+            </div>
+          ) : (
+            plans.map((plan: Plan, index: number) => {
+              const displayPrice = isYearly ? plan.price_yearly || plan.price * 10 : plan.price
+              const period = isYearly ? '/year' : '/month'
 
-                  <div className="p-6 md:p-8">
-                    {/* Header */}
-                    <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{plan.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
+              return (
+                <FadeInUp key={index} delay={index * 0.1}>
+                  <div
+                    className={`relative rounded-lg transition-all duration-300 card-modern ${plan.slug === 'pro' ? 'border-primary/60 md:scale-105' : ''
+                      }`}
+                  >
+                    {/* Badge */}
+                    {plan.slug === 'pro' && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold text-primary-foreground bg-primary">
+                        Most Popular
+                      </div>
+                    )}
 
-                    {/* Price */}
-                    <div className="mb-8">
-                      {displayPrice ? (
-                        <div className="flex items-baseline gap-2 mb-2">
-                          <span className="text-4xl md:text-5xl font-bold text-primary">${displayPrice}</span>
-                          <span className="text-muted-foreground text-sm">{period}</span>
-                        </div>
-                      ) : (
-                        <div className="text-2xl font-bold text-foreground mb-2">Custom pricing</div>
-                      )}
-                      {isYearly && displayPrice && (
-                        <p className="text-xs text-primary">20% discount applied</p>
-                      )}
-                    </div>
+                    <div className="p-6 md:p-8">
+                      {/* Header */}
+                      <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">{plan.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
 
-                    {/* CTA */}
-                    <button className={`w-full py-2.5 rounded-lg font-semibold transition-all duration-200 mb-8 ${
-                      plan.highlighted
-                        ? 'glow-button'
-                        : 'border border-border hover:border-primary/40 hover:bg-primary/5 text-foreground'
-                    }`}>
-                      {plan.cta}
-                    </button>
+                      {/* Price */}
+                      <div className="mb-8">
+                        {displayPrice > 0 ? (
+                          <div className="flex items-baseline gap-2 mb-2">
+                            <span className="text-4xl md:text-5xl font-bold text-primary">${displayPrice}</span>
+                            <span className="text-muted-foreground text-sm">{period}</span>
+                          </div>
+                        ) : (
+                          <div className="text-4xl md:text-5xl font-bold text-primary">Free</div>
+                        )}
+                      </div>
 
-                    {/* Features */}
-                    <div className="space-y-3">
-                      {plan.features.map((feature, idx) => (
-                        <div key={idx} className="flex gap-3">
-                          <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-muted-foreground">{feature}</span>
-                        </div>
-                      ))}
+                      {/* CTA */}
+                      <button
+                        onClick={() => handleCheckout(plan.id, isYearly ? 'yearly' : 'monthly')}
+                        className={`w-full py-2.5 rounded-lg font-semibold transition-all duration-200 mb-8 ${plan.slug === 'pro'
+                          ? 'glow-button'
+                          : 'border border-border hover:border-primary/40 hover:bg-primary/5 text-foreground'
+                          }`}>
+                        {plan.price > 0 ? 'Get Started' : 'Start Free Trial'}
+                      </button>
+
+                      {/* Features - Assuming features are stored in description or separate field */}
+                      <div className="space-y-3">
+                        {(plan.features || []).map((feature: any, idx: number) => (
+                          <div key={idx} className="flex gap-3">
+                            <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-muted-foreground">{feature.name || feature}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </FadeInUp>
-            )
-          })}
+                </FadeInUp>
+              )
+            })
+          )}
         </div>
       </section>
 
@@ -250,9 +250,9 @@ export default function PricingPage() {
             <p className="body-text mb-8">
               Choose your plan and start building in minutes. Our team is here to help you succeed.
             </p>
-            <a href="/auth/login" className="inline-block glow-button">
+            <Link href="/auth/login" className="inline-block glow-button">
               Get Started Free
-            </a>
+            </Link>
           </div>
         </FadeInUp>
       </section>

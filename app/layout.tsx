@@ -29,6 +29,9 @@ export const viewport: Viewport = {
   themeColor: '#050505',
 }
 
+import { AuthProvider } from '@/components/providers/auth-provider'
+import { RecaptchaProvider } from '@/components/providers/recaptcha-provider'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,8 +41,12 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head />
       <body className={`${inter.className} antialiased bg-background text-foreground`}>
-        <BackgroundEffects />
-        {children}
+        <AuthProvider>
+          <RecaptchaProvider>
+            <BackgroundEffects />
+            {children}
+          </RecaptchaProvider>
+        </AuthProvider>
       </body>
     </html>
   )

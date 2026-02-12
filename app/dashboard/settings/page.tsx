@@ -1,26 +1,94 @@
-'use client'
-
-import { Save } from 'lucide-react'
-import { useState } from 'react'
+import { Save, Loader2, Camera, Trash2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { useAuth } from '@/components/providers/auth-provider'
+import { api } from '@/lib/api'
 
 export default function SettingsPage() {
+  const { user, updateUser } = useAuth()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [settings, setSettings] = useState({
-    companyName: 'Acme Corporation',
-    email: 'john@acme.com',
-    fullName: 'John Doe',
-    timezone: 'America/New_York',
-    language: 'English',
-    emailNotifications: true,
-    slackNotifications: false,
-    weeklyReports: true,
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    username: '',
   })
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+
+  useEffect(() => {
+    if (user) {
+      setSettings({
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+        email: user.email || '',
+        username: user.username || '',
+        company: (user as any).meta?.company || '',
+      })
+    }
+  }, [user])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target
+    const { name, value } = e.target
     setSettings((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]: value,
     }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setMessage(null)
+
+    try {
+      const response = await api.put('/user', {
+        first_name: settings.firstName,
+        last_name: settings.lastName,
+        email: settings.email,
+        username: settings.username,
+        meta: { company: settings.company }
+      })
+
+      if (response.status === 'success') {
+        setMessage({ type: 'success', text: 'Profile updated successfully' })
+        await updateUser()
+      }
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to update profile' })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+    setMessage(null)
+
+    const formData = new FormData()
+    formData.append('avatar', file)
+
+    try {
+      const response = await api.post('/user/avatar', formData)
+      if (response.status === 'success') {
+        setMessage({ type: 'success', text: 'Avatar uploaded successfully' })
+        await updateUser()
+      }
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to upload avatar' })
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -31,179 +99,170 @@ export default function SettingsPage() {
         <p className="text-slate-400">Manage your account preferences and security settings.</p>
       </div>
 
+      {message && (
+        <div className={`p-4 rounded-xl border ${message.type === 'success'
+            ? 'bg-lime-500/10 border-lime-500/20 text-lime-400'
+            : 'bg-red-500/10 border-red-500/20 text-red-400'
+          }`}>
+          {message.text}
+        </div>
+      )}
+
       {/* Profile Section */}
-      <div className="glass-effect p-8 rounded-xl">
-        <h2 className="text-lg font-bold text-white mb-6">Profile</h2>
-        <div className="space-y-6">
-          {/* Name */}
-          <div>
-            <label htmlFor="fullName" className="block text-sm font-semibold text-white mb-2">
-              Full Name
-            </label>
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              value={settings.fullName}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-            />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="glass-effect p-8 rounded-xl">
+          <h2 className="text-lg font-bold text-white mb-6">Profile</h2>
+
+          {/* Avatar Upload */}
+          <div className="flex items-center gap-8 mb-8 pb-8 border-b border-white/10">
+            <div className="relative group">
+              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-400/20 to-purple-600/20 text-slate-400">
+                    <Camera size={32} />
+                  </div>
+                )}
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <Loader2 className="animate-spin text-cyan-400" />
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={handleAvatarClick}
+                className="absolute -bottom-2 -right-2 w-8 h-8 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-obsidian-dark flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+              >
+                <Camera size={16} />
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
+            </div>
+            <div>
+              <h3 className="font-bold text-white mb-1">Profile Photo</h3>
+              <p className="text-sm text-slate-400 mb-3">Update your avatar to personalize your dashboard.</p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleAvatarClick}
+                  className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-semibold text-white transition-colors"
+                >
+                  Change Photo
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-white mb-2">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={settings.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Username */}
+            <div className="md:col-span-2">
+              <label htmlFor="username" className="block text-sm font-semibold text-white mb-2">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                value={settings.username}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all font-mono"
+              />
+            </div>
 
-          {/* Company */}
-          <div>
-            <label htmlFor="companyName" className="block text-sm font-semibold text-white mb-2">
-              Company Name
-            </label>
-            <input
-              id="companyName"
-              name="companyName"
-              type="text"
-              value={settings.companyName}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-            />
+            {/* First Name */}
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-semibold text-white mb-2">
+                First Name
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={settings.firstName}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+              />
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-semibold text-white mb-2">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={settings.lastName}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="md:col-span-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-white mb-2">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={settings.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+              />
+            </div>
+
+            {/* Company */}
+            <div className="md:col-span-2">
+              <label htmlFor="company" className="block text-sm font-semibold text-white mb-2">
+                Company Name
+              </label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                value={settings.company}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Preferences Section */}
-      <div className="glass-effect p-8 rounded-xl">
-        <h2 className="text-lg font-bold text-white mb-6">Preferences</h2>
-        <div className="space-y-6">
-          {/* Timezone */}
-          <div>
-            <label htmlFor="timezone" className="block text-sm font-semibold text-white mb-2">
-              Timezone
-            </label>
-            <select
-              id="timezone"
-              name="timezone"
-              value={settings.timezone}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-            >
-              <option value="America/New_York">Eastern Time (ET)</option>
-              <option value="America/Chicago">Central Time (CT)</option>
-              <option value="America/Denver">Mountain Time (MT)</option>
-              <option value="America/Los_Angeles">Pacific Time (PT)</option>
-              <option value="Europe/London">London (GMT)</option>
-              <option value="Europe/Paris">Paris (CET)</option>
-              <option value="Asia/Tokyo">Tokyo (JST)</option>
-            </select>
-          </div>
-
-          {/* Language */}
-          <div>
-            <label htmlFor="language" className="block text-sm font-semibold text-white mb-2">
-              Language
-            </label>
-            <select
-              id="language"
-              name="language"
-              value={settings.language}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-            >
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
-              <option value="French">French</option>
-              <option value="German">German</option>
-              <option value="Japanese">Japanese</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Notifications Section */}
-      <div className="glass-effect p-8 rounded-xl">
-        <h2 className="text-lg font-bold text-white mb-6">Notifications</h2>
-        <div className="space-y-4">
-          {/* Email Notifications */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="emailNotifications"
-              checked={settings.emailNotifications}
-              onChange={handleChange}
-              className="w-4 h-4 rounded bg-white/10 border border-white/20 cursor-pointer"
-            />
-            <div>
-              <p className="font-semibold text-white">Email Notifications</p>
-              <p className="text-xs text-slate-400">Receive alerts about API usage and issues</p>
-            </div>
-          </label>
-
-          {/* Slack Notifications */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="slackNotifications"
-              checked={settings.slackNotifications}
-              onChange={handleChange}
-              className="w-4 h-4 rounded bg-white/10 border border-white/20 cursor-pointer"
-            />
-            <div>
-              <p className="font-semibold text-white">Slack Notifications</p>
-              <p className="text-xs text-slate-400">Send alerts to Slack channel</p>
-            </div>
-          </label>
-
-          {/* Weekly Reports */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="weeklyReports"
-              checked={settings.weeklyReports}
-              onChange={handleChange}
-              className="w-4 h-4 rounded bg-white/10 border border-white/20 cursor-pointer"
-            />
-            <div>
-              <p className="font-semibold text-white">Weekly Reports</p>
-              <p className="text-xs text-slate-400">Get a weekly summary of your API usage</p>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      {/* Security Section */}
-      <div className="glass-effect p-8 rounded-xl">
-        <h2 className="text-lg font-bold text-white mb-6">Security</h2>
-        <div className="space-y-4">
-          <button className="w-full px-4 py-3 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-white font-semibold text-left">
-            Change Password
+        {/* Action Button */}
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-slate-400">Manage your profile details and identity.</p>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="glow-button flex items-center gap-2 disabled:opacity-50"
+          >
+            {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            Save Profile
           </button>
-          <button className="w-full px-4 py-3 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-white font-semibold text-left">
-            Enable Two-Factor Authentication
+        </div>
+      </form>
+
+      {/* Security Section (Mock for now) */}
+      <div className="glass-effect p-8 rounded-xl opacity-60">
+        <h2 className="text-lg font-bold text-white mb-6">Security & Account</h2>
+        <div className="space-y-4">
+          <button disabled className="w-full px-4 py-3 rounded-lg border border-white/5 bg-white/5 text-slate-400 font-semibold text-left cursor-not-allowed">
+            Update Password
           </button>
-          <button className="w-full px-4 py-3 rounded-lg border border-red-500/30 hover:border-red-400 hover:bg-red-400/10 transition-all text-red-400 font-semibold text-left">
+          <button disabled className="w-full px-4 py-3 rounded-lg border border-red-500/30 hover:bg-red-500/5 text-red-500/50 font-semibold text-left cursor-not-allowed">
             Delete Account
           </button>
         </div>
-      </div>
-
-      {/* Save Button */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-400">Changes are saved automatically</p>
-        <button className="glow-button flex items-center gap-2">
-          <Save size={18} />
-          Save Changes
-        </button>
       </div>
     </div>
   )
