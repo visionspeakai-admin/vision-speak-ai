@@ -22,6 +22,19 @@ const config: Config = {
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        obsidian: {
+          DEFAULT: '#050505',
+          light: '#0A0A0A',
+          dark: '#020202',
+        },
+        cyan: {
+          electric: '#00F2FF',
+          glow: 'rgba(0, 242, 255, 0.5)',
+        },
+        lime: {
+          bio: '#CCFF00',
+          glow: 'rgba(204, 255, 0, 0.5)',
+        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
@@ -119,6 +132,18 @@ const config: Config = {
           from: { opacity: '0', transform: 'translateY(10px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'scan': {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+        'pulse-cyan': {
+          '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 10px #00F2FF)' },
+          '50%': { opacity: '0.8', filter: 'drop-shadow(0 0 20px #00F2FF)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -128,6 +153,9 @@ const config: Config = {
         'slide-in-right': 'slide-in-right 0.5s ease-out',
         'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
         'stagger-in': 'stagger-in 0.5s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'scan': 'scan 3s linear infinite',
+        'pulse-cyan': 'pulse-cyan 2s ease-in-out infinite',
       },
     },
   },

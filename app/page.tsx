@@ -80,21 +80,27 @@ export default function Home() {
         secondaryCta={{ text: 'Watch Demo', href: '/demo' }}
         backgroundVariant="gradient"
       >
-        <div className="relative w-full h-80 md:h-96 mx-auto mt-12 rounded-lg card-modern overflow-hidden flex items-center justify-center">
-          {/* Placeholder for interactive visualization */}
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/30">
-              <Eye className="w-10 h-10 text-primary" />
+        <div className="relative w-full h-80 md:h-96 mx-auto mt-12 rounded-2xl glass-effect overflow-hidden flex items-center justify-center group">
+          {/* Animated Background Scan Line */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-electric/10 to-transparent w-full h-1/2 -top-full animate-scan" />
+
+          <div className="text-center relative z-10 transition-transform duration-500 group-hover:scale-110">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-cyan-electric/10 flex items-center justify-center border-2 border-cyan-electric/30 shadow-[0_0_30px_rgba(0,242,255,0.2)]">
+              <Eye className="w-12 h-12 text-cyan-electric animate-pulse-cyan" />
             </div>
-            <p className="text-muted-foreground text-sm">Interactive AI Visualization</p>
+            <p className="text-cyan-electric font-mono text-xs tracking-widest uppercase mb-1">Neural-Link Active</p>
+            <p className="text-white font-bold text-lg">Interactive Vision Engine</p>
           </div>
         </div>
       </HeroSection>
 
       {/* Metrics Section */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <ScrollReveal className="text-center mb-12">
-          <h2 className="heading-lg text-pretty">Performance Built on NVIDIA Excellence</h2>
+      <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <ScrollReveal className="text-center mb-16">
+          <h2 className="heading-lg text-pretty">
+            Performance Built on <span className="glow-cyan uppercase">NVIDIA</span> Excellence
+          </h2>
+          <div className="w-24 h-1 bg-lime-bio mx-auto mt-4 rounded-full" />
         </ScrollReveal>
         <MetricsDisplay metrics={metrics} />
       </section>
@@ -102,12 +108,12 @@ export default function Home() {
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <ScrollReveal className="text-center mb-12">
-          <h2 className="heading-lg mb-4 text-pretty">Core Capabilities</h2>
+          <h2 className="heading-lg mb-4 text-pretty font-black tracking-tighter">CORE CAPABILITIES</h2>
           <p className="body-text max-w-2xl mx-auto">
-            State-of-the-art AI models trained on diverse datasets, optimized for production environments.
+            State-of-the-art AI models trained on diverse datasets, optimized for <span className="text-lime-bio font-bold">production-grade</span> environments.
           </p>
         </ScrollReveal>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {features.map((feature, index) => (
             <FadeInUp key={index} delay={index * 0.1}>
               <FeatureCard {...feature} />
@@ -117,70 +123,71 @@ export default function Home() {
       </section>
 
       {/* NVIDIA Integration Section */}
-      <section className="relative py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+      <section className="relative py-16 md:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-electric/5 rounded-full blur-[120px] -z-10" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-lime-bio/5 rounded-full blur-[120px] -z-10" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <div>
-            <div className="inline-block mb-4 px-4 py-2 rounded-full glass-effect">
-              <span className="text-cyan-400 text-sm font-semibold">Powered by NVIDIA</span>
+            <div className="inline-block mb-4 px-4 py-2 rounded-xl glass-effect-strong border-cyan-electric/30">
+              <span className="text-cyan-electric text-sm font-black uppercase tracking-widest">Powered by NVIDIA</span>
             </div>
-            <h2 className="heading-lg mb-6 text-pretty">GPU-Accelerated Inference</h2>
-            <p className="body-text mb-6">
-              Leveraging NVIDIA CUDA and cuDNN technology, VisionSpeakAI delivers unprecedented performance. Our models run on modern NVIDIA GPUs including RTX series and A100 data center GPUs, achieving sub-100ms latency for real-time applications.
+            <h2 className="heading-lg mb-6 text-pretty font-black">GPU-ACCELERATED INFERENCE</h2>
+            <p className="body-text mb-8 text-white/80">
+              Leveraging NVIDIA CUDA and cuDNN technology, VisionSpeakAI delivers unprecedented performance. Our models run on modern NVIDIA GPUs, achieving <span className="text-cyan-electric font-bold">sub-100ms latency</span> for real-time applications.
             </p>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg card-modern border-border flex items-center justify-center">
-                  <Cpu className="w-6 h-6 text-primary" />
+            <div className="space-y-6 mb-10">
+              <div className="flex gap-6 items-center">
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg">
+                  <Cpu className="w-7 h-7 text-cyan-electric" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">CUDA Acceleration</h3>
-                  <p className="text-sm text-muted-foreground">Parallel processing for optimal throughput</p>
+                  <h3 className="font-bold text-white text-lg">CUDA Acceleration</h3>
+                  <p className="text-sm text-slate-400">Parallel processing for optimal throughput</p>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg card-modern border-border flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-primary" />
+              <div className="flex gap-6 items-center">
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg">
+                  <Zap className="w-7 h-7 text-cyan-electric" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Real-time Processing</h3>
-                  <p className="text-sm text-muted-foreground">Sub-100ms latency on supported hardware</p>
+                  <h3 className="font-bold text-white text-lg">Real-time Processing</h3>
+                  <p className="text-sm text-slate-400">Low-latency processing in mission-critical environments</p>
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg card-modern border-border flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-primary" />
+              <div className="flex gap-6 items-center">
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg">
+                  <TrendingUp className="w-7 h-7 text-cyan-electric" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Scalable Architecture</h3>
-                  <p className="text-sm text-muted-foreground">From edge to cloud deployment options</p>
+                  <h3 className="font-bold text-white text-lg">Scalable Architecture</h3>
+                  <p className="text-sm text-slate-400">Enterprise-ready deployment from edge to cloud</p>
                 </div>
               </div>
             </div>
 
-            <a href="/technology" className="inline-block glow-button">
+            <a href="/technology" className="glow-button">
               Explore Technology
             </a>
           </div>
 
           {/* Right: Stats */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className="card-modern border-l-4 border-primary">
-              <div className="text-3xl font-bold text-primary mb-2">45%</div>
-              <p className="text-sm text-muted-foreground">Faster than CPU baseline</p>
+          <div className="grid grid-cols-1 gap-6">
+            <div className="card-modern border-l-4 border-cyan-electric bg-obsidian-light p-8">
+              <div className="text-4xl font-black text-cyan-electric mb-2 tracking-tighter">45%</div>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Faster than CPU baseline</p>
             </div>
-            <div className="card-modern border-l-4 border-lime-400">
-              <div className="text-3xl font-bold text-lime-400 mb-2">8x</div>
-              <p className="text-sm text-muted-foreground">Throughput improvement with NVIDIA</p>
+            <div className="card-modern border-l-4 border-lime-bio bg-obsidian-light p-8">
+              <div className="text-4xl font-black text-lime-bio mb-2 tracking-tighter">8x</div>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Throughput improvement</p>
             </div>
-            <div className="card-modern border-l-4 border-purple-400">
-              <div className="text-3xl font-bold text-purple-400 mb-2">60%</div>
-              <p className="text-sm text-muted-foreground">Energy efficiency gain</p>
+            <div className="card-modern border-l-4 border-purple-500 bg-obsidian-light p-8">
+              <div className="text-4xl font-black text-purple-500 mb-2 tracking-tighter">PHASE 2</div>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Hybrid Edge Deployment</p>
             </div>
           </div>
         </div>
@@ -204,22 +211,24 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8">
         <FadeInUp>
-          <div className="max-w-3xl mx-auto text-center card-modern p-12">
-            <h2 className="heading-lg mb-4 text-pretty">Ready to Transform Communication?</h2>
-            <p className="body-text mb-8">
-              Join enterprises leveraging AI to create accessible, secure, and innovative experiences.
+          <div className="max-w-4xl mx-auto text-center card-modern p-16 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-electric/5 via-transparent to-lime-bio/5 opacity-50" />
+
+            <h2 className="heading-lg mb-6 text-pretty font-black relative z-10">READY TO TRANSFORM COMMUNICATION?</h2>
+            <p className="body-text mb-10 text-white/70 relative z-10 max-w-2xl mx-auto">
+              Join leading enterprises leveraging vision AI to create more accessible, secure, and innovative human experiences.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/developers" className="glow-button">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
+              <a href="/auth/signup" className="glow-button px-10">
                 Get API Access
               </a>
               <a
-                href="#"
-                className="px-6 py-3 font-semibold rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-foreground transition-all"
+                href="/demo"
+                className="glow-button-secondary px-10"
               >
-                Schedule Demo
+                Watch Demo
               </a>
             </div>
           </div>

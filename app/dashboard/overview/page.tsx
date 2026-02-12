@@ -99,54 +99,71 @@ export default function DashboardOverview() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Usage Chart Placeholder */}
-        <div className="lg:col-span-2 glass-effect p-8 rounded-xl">
-          <h2 className="text-lg font-bold text-white mb-6">API Usage (30 days)</h2>
-          <div className="h-64 bg-black/20 rounded-lg flex items-center justify-center text-slate-500 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent" />
-            <p className="relative z-10 font-mono text-sm">Real-time usage metrics coming soon</p>
+        <div className="lg:col-span-2 card-modern !p-0 overflow-hidden group">
+          <div className="p-8 border-b border-white/5 flex items-center justify-between">
+            <h2 className="text-xs font-black text-white uppercase tracking-[0.2em]">Neural Usage Matrix (30D)</h2>
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-cyan-electric/50" />
+              <div className="w-2 h-2 rounded-full bg-lime-bio/50" />
+            </div>
+          </div>
+          <div className="h-[400px] bg-obsidian-dark/50 flex flex-col items-center justify-center relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,255,0.05)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="w-full h-full absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+            <div className="relative z-10 flex flex-col items-center gap-4">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
+                <TrendingUp size={32} className="text-cyan-electric" />
+              </div>
+              <p className="font-black text-[10px] uppercase tracking-[0.4em] text-slate-500">Telemetry Feed Incoming...</p>
+            </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-6">
-          <div className="glass-effect p-6 rounded-xl">
-            <h3 className="font-bold text-white mb-4">Quick Actions</h3>
-            <div className="space-y-3">
+        {/* Quick Actions & Plan */}
+        <div className="space-y-8">
+          <div className="card-modern">
+            <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 border-b border-white/5 pb-4">Terminal Commands</h3>
+            <div className="space-y-4">
               <Link
                 href="/dashboard/api-keys"
-                className="block w-full px-4 py-2 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-center text-sm font-semibold text-white"
+                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-electric/40 hover:bg-cyan-electric/5 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-white group"
               >
                 Manage API Keys
               </Link>
               <Link
                 href="/documentation"
-                className="block w-full px-4 py-2 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-center text-sm font-semibold text-white"
+                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-lime-bio/40 hover:bg-lime-bio/5 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-white"
               >
-                API Docs
+                Access Documentation
               </Link>
               <Link
                 href="/dashboard/settings"
-                className="block w-full px-4 py-2 rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-center text-sm font-semibold text-white"
+                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-white"
               >
-                Account Settings
+                System Settings
               </Link>
             </div>
           </div>
 
           {/* Usage Summary */}
-          <div className="glass-effect p-6 rounded-xl">
-            <h3 className="font-bold text-white mb-4">Plan: <span className="text-cyan-400 uppercase">{user?.current_plan || 'Free'}</span></h3>
-            <div className="space-y-4">
+          <div className="card-modern border-cyan-electric/20">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xs font-black text-white uppercase tracking-[0.2em]">CURRENT PLAN</h3>
+              <span className="px-3 py-1 rounded-lg bg-cyan-electric/10 text-cyan-electric text-[10px] font-black uppercase tracking-widest">{user?.current_plan || 'COMMUNITY'}</span>
+            </div>
+            <div className="space-y-6">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-slate-400">API Calls</span>
-                  <span className="text-sm font-bold text-cyan-300">2.4M / 3M</span>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">API QUOTA USAGE</span>
+                  <span className="text-xs font-black text-cyan-electric">80.0%</span>
                 </div>
-                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-4/5 bg-gradient-to-r from-cyan-400 to-cyan-600" />
+                <div className="h-2.5 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
+                  <div className="h-full w-4/5 bg-gradient-to-r from-cyan-electric to-cyan-500 rounded-full shadow-[0_0_10px_rgba(0,242,255,0.4)]" />
                 </div>
+                <p className="mt-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest">2.4M / 3M REQUESTS</p>
               </div>
             </div>
           </div>

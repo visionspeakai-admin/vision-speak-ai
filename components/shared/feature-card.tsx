@@ -19,37 +19,36 @@ export function FeatureCard({
 }: FeatureCardProps) {
   return (
     <div
-      className={`relative group p-6 md:p-8 rounded-xl transition-all duration-500 ${
-        isHighlighted
-          ? 'glass-effect-strong border-cyan-400/50 shadow-[0_0_30px_rgba(0,242,255,0.3)]'
-          : 'glass-effect hover:border-cyan-400/40 hover:shadow-[0_0_20px_rgba(0,242,255,0.2)]'
-      }`}
+      className={`relative group p-8 rounded-2xl transition-all duration-500 overflow-hidden ${isHighlighted
+          ? 'glass-effect-strong border-cyan-electric/40 bg-cyan-electric/5'
+          : 'glass-effect hover:border-cyan-electric/30'
+        }`}
     >
-      {/* Background Glow on Hover */}
-      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20" />
+      {/* Dynamic Background Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 blur-[80px] bg-gradient-to-br from-cyan-electric/20 via-transparent to-lime-bio/10" />
 
       {/* Badge */}
       {badge && (
-        <div className="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold text-cyan-300 bg-cyan-500/10 border border-cyan-500/30">
+        <div className="inline-block mb-6 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] text-cyan-electric bg-cyan-electric/10 border border-cyan-electric/20 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
           {badge}
         </div>
       )}
 
       {/* Icon */}
-      <div className="mb-4 p-3 rounded-lg w-fit bg-white/5 group-hover:bg-cyan-500/10 transition-colors">
-        <div className="text-2xl md:text-3xl text-cyan-400">{icon}</div>
+      <div className="mb-6 w-14 h-14 rounded-2xl bg-white/5 group-hover:bg-cyan-electric/10 flex items-center justify-center border border-white/5 group-hover:border-cyan-electric/30 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg">
+        <div className="text-3xl text-cyan-electric drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]">{icon}</div>
       </div>
 
       {/* Content */}
-      <h3 className="text-lg md:text-xl font-bold mb-2 text-white group-hover:text-cyan-300 transition-colors">
+      <h3 className="text-xl font-black mb-3 text-white uppercase tracking-tight group-hover:text-cyan-electric transition-colors duration-300">
         {title}
       </h3>
-      <p className="text-sm md:text-base text-slate-400 group-hover:text-slate-300 transition-colors leading-relaxed">
+      <p className="text-slate-400 group-hover:text-slate-200 transition-colors duration-300 leading-relaxed text-sm md:text-base">
         {description}
       </p>
 
-      {/* Bottom Accent Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Bottom Interactive Accent */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-lime-bio to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-1 group-hover:translate-y-0" />
     </div>
   )
 }

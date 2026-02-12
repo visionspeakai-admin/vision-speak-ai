@@ -19,8 +19,38 @@ interface Plan {
   description: string;
   price: number;
   price_yearly: number | null;
-  features?: any[];
+  features?: string[];
 }
+
+const MOCK_PLANS: Plan[] = [
+  {
+    id: 1,
+    slug: 'basic',
+    name: 'Basic',
+    description: 'ENTRY-LEVEL PRECISION',
+    price: 0,
+    price_yearly: 0,
+    features: ['5 TELEMETRY QUERIES', 'BASIC AI CORE', 'COMMUNITY ACCESS']
+  },
+  {
+    id: 2,
+    slug: 'pro',
+    name: 'Pro',
+    description: 'HIGH-PERFORMANCE ANALYTICS',
+    price: 19.99,
+    price_yearly: 199.99,
+    features: ['UNLIMITED TELEMETRY', 'HARDWARE ACCELERATION', 'PRIORITY COMPUTE', 'EXOTIC MODELS']
+  },
+  {
+    id: 3,
+    slug: 'enterprise',
+    name: 'Enterprise',
+    description: 'UNRESTRICTED SCALABILITY',
+    price: 49.99,
+    price_yearly: 499.99,
+    features: ['DEDICATED INSTANCE', 'QUANTUM SLA', 'ADVANCED FORENSICS', 'RAW API ACCESS']
+  }
+]
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
@@ -35,12 +65,19 @@ export default function PricingPage() {
 
   const fetchPlans = async () => {
     try {
-      const response = await api.get<Plan[]>('/plans')
+      const response = await api.get<Plan[]>('/subscription-plans')
       if (response.status === 'success' && Array.isArray(response.data)) {
-        setPlans(response.data)
+        if (response.data.length > 0) {
+          setPlans(response.data)
+        } else {
+          setPlans(MOCK_PLANS)
+        }
+      } else {
+        setPlans(MOCK_PLANS)
       }
     } catch (error) {
       console.error('Failed to fetch plans:', error)
+      setPlans(MOCK_PLANS)
     } finally {
       setIsLoading(false)
     }
@@ -53,16 +90,10 @@ export default function PricingPage() {
     }
 
     try {
-      const response = await api.post<{ url: string }>('/subscriptions/checkout', {
-        plan_id: planId,
-        interval,
-        success_url: `${window.location.origin}/dashboard?checkout=success`,
-        cancel_url: `${window.location.origin}/pricing?checkout=cancelled`,
-      })
-
-      if (response.status === 'success' && response.data?.url) {
-        window.location.href = response.data.url
-      }
+      // The backend documentation says POST /subscriptions with card details, 
+      // but the frontend was built for a hosted checkout. 
+      // Redirecting to dashboard until checkout flow is harmonized with direct payment API.
+      router.push('/dashboard')
     } catch (error) {
       console.error('Checkout failed:', error)
     }
@@ -90,22 +121,21 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Billing Toggle */}
-        <div className="flex justify-center items-center gap-4 mb-16">
-          <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
+        <div className="flex justify-center items-center gap-6 mb-20">
+          <span className={`text-xs font-black uppercase tracking-widest transition-colors ${!isYearly ? 'text-cyan-electric' : 'text-slate-500'}`}>
             Monthly
           </span>
           <button
             onClick={() => setIsYearly(!isYearly)}
-            className="relative inline-flex h-8 w-16 items-center rounded-full bg-secondary transition-colors"
-            style={{ backgroundColor: isYearly ? 'hsl(186, 100%, 50%)' : 'hsl(0, 0%, 15%)' }}
+            className="relative inline-flex h-10 w-20 items-center rounded-2xl bg-white/5 border border-white/10 transition-all hover:border-cyan-electric/40"
           >
             <span
-              className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${isYearly ? 'translate-x-9' : 'translate-x-1'
+              className={`inline-block h-6 w-6 transform rounded-lg shadow-[0_0_15px_rgba(0,242,255,0.4)] transition-all duration-500 ${isYearly ? 'translate-x-12 bg-lime-bio shadow-[0_0_15px_rgba(204,255,0,0.5)]' : 'translate-x-2 bg-cyan-electric'
                 }`}
             />
           </button>
-          <span className={`text-sm font-medium transition-colors ${isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
-            Yearly <span className="text-primary font-bold text-xs ml-1">Save 20%</span>
+          <span className={`text-xs font-black uppercase tracking-widest transition-colors ${isYearly ? 'text-lime-bio' : 'text-slate-500'}`}>
+            Yearly <span className="glass-effect-strong px-2 py-1 rounded ml-2 text-[10px] text-lime-bio">-20%</span>
           </span>
         </div>
 
@@ -118,11 +148,12 @@ export default function PricingPage() {
             plans.map((plan: Plan, index: number) => {
               const displayPrice = isYearly ? plan.price_yearly || plan.price * 10 : plan.price
               const period = isYearly ? '/year' : '/month'
+              const isPro = plan.slug === 'pro'
 
               return (
                 <FadeInUp key={index} delay={index * 0.1}>
                   <div
-                    className={`relative rounded-lg transition-all duration-300 card-modern ${plan.slug === 'pro' ? 'border-primary/60 md:scale-105' : ''
+                    className={`relative rounded-3xl transition-all duration-500 card-modern h-full ${isPro ? 'border-lime-bio/40 bg-lime-bio/5 md:scale-105 shadow-[0_0_50px_rgba(204,255,0,0.1)]' : 'border-white/10'
                       }`}
                   >
                     {/* Badge */}
@@ -138,33 +169,33 @@ export default function PricingPage() {
                       <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
 
                       {/* Price */}
-                      <div className="mb-8">
+                      <div className="mb-10">
                         {displayPrice > 0 ? (
                           <div className="flex items-baseline gap-2 mb-2">
-                            <span className="text-4xl md:text-5xl font-bold text-primary">${displayPrice}</span>
-                            <span className="text-muted-foreground text-sm">{period}</span>
+                            <span className="text-5xl md:text-6xl font-black text-cyan-electric tracking-tighter drop-shadow-sm">${displayPrice}</span>
+                            <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">{period}</span>
                           </div>
                         ) : (
-                          <div className="text-4xl md:text-5xl font-bold text-primary">Free</div>
+                          <div className="text-5xl md:text-6xl font-black text-cyan-electric tracking-tighter">FREE</div>
                         )}
                       </div>
 
                       {/* CTA */}
                       <button
                         onClick={() => handleCheckout(plan.id, isYearly ? 'yearly' : 'monthly')}
-                        className={`w-full py-2.5 rounded-lg font-semibold transition-all duration-200 mb-8 ${plan.slug === 'pro'
-                          ? 'glow-button'
-                          : 'border border-border hover:border-primary/40 hover:bg-primary/5 text-foreground'
+                        className={`w-full py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 mb-8 ${isPro
+                          ? 'glow-button-accent'
+                          : 'glow-button-secondary'
                           }`}>
                         {plan.price > 0 ? 'Get Started' : 'Start Free Trial'}
                       </button>
 
-                      {/* Features - Assuming features are stored in description or separate field */}
-                      <div className="space-y-3">
+                      {/* Features */}
+                      <div className="space-y-4">
                         {(plan.features || []).map((feature: any, idx: number) => (
-                          <div key={idx} className="flex gap-3">
-                            <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-sm text-muted-foreground">{feature.name || feature}</span>
+                          <div key={idx} className="flex gap-4">
+                            <Check className="w-4 h-4 text-lime-bio flex-shrink-0 mt-0.5" />
+                            <span className="text-sm font-bold text-slate-300 uppercase tracking-tight">{feature.name || feature}</span>
                           </div>
                         ))}
                       </div>

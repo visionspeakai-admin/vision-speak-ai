@@ -16,15 +16,15 @@ export function Navigation() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 glass-effect">
+    <nav className="sticky top-0 z-50 glass-effect-strong border-b border-white/5 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl md:text-2xl">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-              <span className="text-obsidian-dark font-black">VS</span>
+          <Link href="/" className="flex items-center gap-3 font-black text-2xl group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-electric to-cyan-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,242,255,0.3)] transition-transform group-hover:rotate-12">
+              <span className="text-obsidian font-black text-sm">VS</span>
             </div>
-            <span className="text-glow hidden sm:inline">VisionSpeak</span>
+            <span className="text-white group-hover:text-cyan-electric transition-colors hidden sm:inline tracking-tighter uppercase">VisionSpeak</span>
           </Link>
 
           {/* Desktop Navigation */}
