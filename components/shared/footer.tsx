@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
 import { FaPinterest, FaYoutube, FaFacebook } from "react-icons/fa";
-import { FaX } from "react-icons/fa6";
+import { FaXTwitter } from "react-icons/fa6";
 import { api } from "@/lib/api";
 import { getRecaptchaToken } from "@/components/providers/recaptcha-provider";
 import { Logo } from "./logo";
@@ -115,7 +115,7 @@ export function Footer() {
                 rel='noopener noreferrer'
                 className='p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5'
               >
-                <FaX
+                <FaXTwitter
                   size={18}
                   className='text-slate-400 hover:text-white transition-colors'
                 />
