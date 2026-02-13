@@ -149,9 +149,12 @@ export default function SignupPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="w-full max-w-md relative z-10"
             >
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                    <Logo />
+                {/* Top-right logo + back link */}
+                <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-1">
+                    <div className="w-10 h-10">
+                        <Logo />
+                    </div>
+                    <Link href="/" className="text-[11px] text-slate-400 hover:text-slate-300 transition-colors">← Back to home</Link>
                 </div>
 
                 {/* Form Card - elevated above the text */}
