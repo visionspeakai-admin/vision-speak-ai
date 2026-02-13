@@ -7,10 +7,18 @@ import { Footer } from '@/components/shared/footer'
 import { HeroSection } from '@/components/shared/hero-section'
 import { FadeInUp } from '@/components/animations/fade-in-up'
 import { ScrollReveal } from '@/components/animations/scroll-reveal'
-import { Check, Zap } from 'lucide-react'
+import { Check, Zap, Loader2, ShieldCheck, ArrowRight } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
 import { api } from '@/lib/api'
 import { useRouter } from 'next/navigation'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface Plan {
   id: number;
@@ -56,7 +64,11 @@ export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
   const [plans, setPlans] = useState<Plan[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { isAuthenticated } = useAuth()
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  const { isAuthenticated, user } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
@@ -83,20 +95,27 @@ export default function PricingPage() {
     }
   }
 
-  const handleCheckout = async (planId: number, interval: 'monthly' | 'yearly') => {
+  const handleCheckout = (planId: number, interval: 'monthly' | 'yearly') => {
     if (!isAuthenticated) {
       router.push(`/auth/login?redirect=/pricing`)
       return
     }
 
-    try {
-      // The backend documentation says POST /subscriptions with card details, 
-      // but the frontend was built for a hosted checkout. 
-      // Redirecting to dashboard until checkout flow is harmonized with direct payment API.
-      router.push('/dashboard')
-    } catch (error) {
-      console.error('Checkout failed:', error)
+    const plan = plans.find(p => p.id === planId)
+    if (plan) {
+      setSelectedPlan(plan)
+      setIsConfirmModalOpen(true)
     }
+  }
+
+  const confirmSubscription = async () => {
+    setIsProcessing(true)
+    // Simulate API call for subscription
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsConfirmModalOpen(false)
+      router.push('/dashboard/overview')
+    }, 2000)
   }
 
   const addOns = [
@@ -289,6 +308,69 @@ export default function PricingPage() {
       </section>
 
       <Footer />
+
+      {/* Plan Confirmation Modal */}
+      <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
+        <DialogContent className="sm:max-w-[450px] glass-effect-strong border-white/10 bg-obsidian-dark text-white p-0 overflow-hidden">
+          <div className="relative h-24 bg-gradient-to-r from-cyan-electric/20 to-purple-600/20 flex items-center justify-center">
+            <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
+            <ShieldCheck size={48} className="text-cyan-electric animate-pulse relative z-10" />
+          </div>
+
+          <div className="p-8">
+            <DialogHeader className="mb-6">
+              <DialogTitle className="text-2xl font-black uppercase tracking-tighter">Confirm Selection</DialogTitle>
+              <DialogDescription className="text-slate-400">
+                You are about to activate the <span className="text-white font-bold">{selectedPlan?.name}</span> plan.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex justify-between items-center p-4 rounded-xl bg-white/5 border border-white/10">
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Due</p>
+                  <p className="text-2xl font-black text-cyan-electric">
+                    ${isYearly ? selectedPlan?.price_yearly : selectedPlan?.price}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Billing Cycle</p>
+                  <span className="text-xs font-bold text-white uppercase tracking-tight">
+                    {isYearly ? 'Yearly (-20%)' : 'Monthly'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-[10px] text-slate-500 italic">
+                <Check size={12} className="text-lime-bio" />
+                No hidden fees. Cancel anytime from your dashboard.
+              </div>
+            </div>
+
+            <DialogFooter className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-xs font-black uppercase tracking-widest text-slate-400 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={isProcessing}
+                onClick={confirmSubscription}
+                className="glow-button flex-1 flex items-center justify-center gap-2"
+              >
+                {isProcessing ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  <>
+                    Complete Order <ArrowRight size={18} />
+                  </>
+                )}
+              </button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

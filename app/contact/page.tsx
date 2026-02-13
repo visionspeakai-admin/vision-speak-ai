@@ -67,9 +67,9 @@ export default function ContactPage() {
 
                         <div className="space-y-8">
                             {[
-                                { icon: Mail, title: 'Email Us', content: 'hello@visionspeakai.com', sub: 'We usually respond within 24 hours.' },
-                                { icon: Phone, title: 'Call Us', content: '+1 (555) 000-0000', sub: 'Mon-Fri from 9am to 6pm.' },
-                                { icon: MapPin, title: 'Visit Us', content: '100 AI Plaza, San Francisco, CA', sub: 'Our global headquarters.' },
+                                { icon: Mail, title: 'Email Us', content: 'support@visionspeakai.com', sub: 'We usually respond within 24 hours.' },
+                                { icon: Phone, title: 'Call Us', content: '+1 (212) 758-9364', sub: 'Mon-Fri from 9am to 6pm.' },
+                                { icon: MapPin, title: 'Visit Us', content: '200 Park Ave, New York, NY 10166, United States', sub: 'Our global headquarters.' },
                             ].map((item, idx) => (
                                 <FadeInUp key={idx} delay={idx * 0.1}>
                                     <div className="flex gap-6">
@@ -113,7 +113,7 @@ export default function ContactPage() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            placeholder="John Doe"
+                                            placeholder="Your Name"
                                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all"
                                         />
                                     </div>

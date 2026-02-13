@@ -119,9 +119,8 @@ stream.setInput(video);`,
   ]
 
   const resources = [
-    { icon: <Book />, title: 'API Reference', description: 'Complete endpoint documentation', link: '#' },
+    { icon: <Book />, title: 'API Reference', description: 'Complete endpoint documentation', link: '#api-reference' },
     { icon: <Code />, title: 'Code Examples', description: 'Working examples in 5+ languages', link: '#' },
-    { icon: <Github />, title: 'GitHub Repos', description: 'SDKs and open source samples', link: '#' },
     { icon: <Zap />, title: 'Quick Start', description: '5-minute setup guide', link: '#' },
   ]
 
@@ -185,13 +184,12 @@ stream.setInput(video);`,
                 </div>
                 <div className="flex gap-2">
                   <span
-                    className={`px-3 py-1 rounded text-xs font-mono font-bold ${
-                      endpoint.method === 'POST'
+                    className={`px-3 py-1 rounded text-xs font-mono font-bold ${endpoint.method === 'POST'
                         ? 'bg-green-500/20 text-green-400'
                         : endpoint.method === 'WebSocket'
                           ? 'bg-purple-500/20 text-purple-400'
                           : 'bg-blue-500/20 text-blue-400'
-                    }`}
+                      }`}
                   >
                     {endpoint.method}
                   </span>
@@ -299,7 +297,7 @@ stream.setInput(video);`,
               <div>
                 <p className="text-xs text-slate-500 mb-4">{sdk.downloads} weekly downloads</p>
                 <button className="w-full px-4 py-2 rounded-lg text-sm font-semibold border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-white">
-                  View on GitHub
+                  Download SDK
                 </button>
               </div>
             </div>

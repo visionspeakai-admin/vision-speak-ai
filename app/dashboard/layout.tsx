@@ -14,10 +14,22 @@ import {
   X,
   User,
   Bell,
+  Loader2,
 } from 'lucide-react'
 
 import { useAuth } from '@/components/providers/auth-provider'
 import { useRouter } from 'next/navigation'
+import { Logo } from '@/components/shared/logo'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard/overview' },
@@ -30,12 +42,28 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
+
   const { user, logout } = useAuth()
+  const [profileData, setProfileData] = useState({
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
+  })
+
   const router = useRouter()
 
   const handleLogout = async () => {
     await logout()
     router.push('/auth/login')
+  }
+
+  const handleUpdateProfile = () => {
+    setIsUpdating(true)
+    setTimeout(() => {
+      setIsUpdating(false)
+      setIsProfileModalOpen(false)
+    }, 1500)
   }
 
   const getInitials = (firstName?: string, lastName?: string) => {
@@ -47,49 +75,78 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside
         className={`fixed left-0 top-0 h-screen glass-effect border-r border-white/10 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'
-          } flex flex-col`}
+          } flex flex-col z-50`}
       >
         {/* Logo */}
         <div className="h-20 flex items-center justify-between px-4 border-b border-white/10">
-          {sidebarOpen && (
-            <Link href="/" className="flex items-center gap-2 font-bold">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-                <span className="text-obsidian-dark font-black text-sm">VS</span>
-              </div>
-              <span className="text-glow">VisionSpeak</span>
-            </Link>
-          )}
+          <Logo showText={sidebarOpen} />
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400"
           >
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
 
+        {/* User Profile Summary */}
+        <div className="px-4 py-6 border-b border-white/5">
+          <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
+            <div className="relative group cursor-pointer" onClick={() => setIsProfileModalOpen(true)}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-electric to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-cyan-electric/20 border border-white/10 group-hover:scale-105 transition-transform">
+                {getInitials(user?.first_name, user?.last_name)}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-obsidian rounded-full" />
+            </div>
+            {sidebarOpen && (
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black text-white uppercase tracking-wider truncate">{user?.first_name} {user?.last_name}</p>
+                <button
+                  onClick={() => setIsProfileModalOpen(true)}
+                  className="text-[10px] font-bold text-cyan-electric/80 hover:text-cyan-electric uppercase tracking-widest block mt-0.5"
+                >
+                  Edit Profile
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 transition-colors group"
+              className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/5"
               title={!sidebarOpen ? item.label : ''}
             >
-              <item.icon className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
-              {sidebarOpen && <span className="text-sm font-medium text-slate-300">{item.label}</span>}
+              <item.icon className="w-5 h-5 text-slate-400 group-hover:text-cyan-electric transition-colors" />
+              {sidebarOpen && <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white">{item.label}</span>}
             </Link>
           ))}
         </nav>
 
+        {/* System Health Snapshot */}
+        {sidebarOpen && (
+          <div className="px-6 py-4 mx-3 mb-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Neural Load</span>
+              <span className="text-[8px] font-black text-cyan-electric uppercase tracking-widest">Optimal</span>
+            </div>
+            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full w-2/3 bg-cyan-electric shadow-[0_0_5px_rgba(0,242,255,0.5)]" />
+            </div>
+          </div>
+        )}
+
         {/* Logout */}
-        <div className="border-t border-white/10 p-4">
+        <div className="border-t border-white/5 p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-red-500/10 text-slate-300 hover:text-red-400 transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-500/5 text-slate-500 hover:text-red-400 transition-all group"
           >
-            <LogOut className="w-5 h-5" />
-            {sidebarOpen && <span className="text-sm font-medium">Logout</span>}
+            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            {sidebarOpen && <span className="text-[10px] font-black uppercase tracking-[0.2em]">Terminate Session</span>}
           </button>
         </div>
       </aside>
@@ -130,6 +187,63 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Page Content */}
         <main className="p-6 md:p-8">{children}</main>
       </div>
+
+      {/* Profile Edit Modal */}
+      <Dialog open={isProfileModalOpen} onOpenChange={setIsProfileModalOpen}>
+        <DialogContent className="sm:max-w-[425px] glass-effect-strong border-white/10 bg-obsidian-dark text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-cyan-electric/20 flex items-center justify-center text-cyan-electric">
+                <User size={18} />
+              </div>
+              Quick Profile Update
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Update your basic information. For more settings, visit the settings page.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-6 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="firstName" className="text-[10px] font-black tracking-widest text-slate-500 uppercase">First Name</Label>
+                <Input
+                  id="firstName"
+                  value={profileData.firstName}
+                  onChange={(e) => setProfileData(prev => ({ ...prev, firstName: e.target.value }))}
+                  className="bg-white/5 border-white/10 focus:border-cyan-electric transition-all text-white"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName" className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Last Name</Label>
+                <Input
+                  id="lastName"
+                  value={profileData.lastName}
+                  onChange={(e) => setProfileData(prev => ({ ...prev, lastName: e.target.value }))}
+                  className="bg-white/5 border-white/10 focus:border-cyan-electric transition-all text-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setIsProfileModalOpen(false)}
+              className="px-6 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-xs font-black uppercase tracking-widest text-slate-400 transition-all"
+            >
+              Close
+            </button>
+            <button
+              disabled={isUpdating}
+              onClick={handleUpdateProfile}
+              className="glow-button flex-1 flex items-center justify-center gap-2"
+            >
+              {isUpdating ? <Loader2 className="animate-spin" size={18} /> : null}
+              Update Identity
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

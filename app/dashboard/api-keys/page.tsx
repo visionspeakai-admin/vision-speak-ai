@@ -1,11 +1,27 @@
 'use client'
 
-import { Copy, Eye, EyeOff, Trash2, Plus } from 'lucide-react'
+import { Copy, Eye, EyeOff, Trash2, Plus, Loader2, Key } from 'lucide-react'
 import { useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function APIKeysPage() {
   const [showKey, setShowKey] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isCreatingKey, setIsCreatingKey] = useState(false)
+  const [newKeyName, setNewKeyName] = useState('')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [keyToDelete, setKeyToDelete] = useState<string | null>(null)
 
   const apiKeys = [
     {
@@ -46,18 +62,69 @@ export default function APIKeysPage() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleCreateKey = () => {
+    setIsCreatingKey(true)
+    setTimeout(() => {
+      setIsCreatingKey(false)
+      setIsCreateModalOpen(false)
+      setNewKeyName('')
+    }, 1500)
+  }
+
+  const handleDeleteKey = () => {
+    setIsDeleteModalOpen(false)
+    setKeyToDelete(null)
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="heading-lg text-white mb-2">API Keys</h1>
           <p className="text-slate-400">Manage your API authentication credentials.</p>
         </div>
-        <button className="glow-button flex items-center gap-2">
-          <Plus size={18} />
-          Create New Key
-        </button>
+
+        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+          <DialogTrigger asChild>
+            <button className="glow-button flex items-center gap-2">
+              <Plus size={18} />
+              Create New Key
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] glass-effect-strong border-white/10 bg-obsidian-dark text-white">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                <Key className="text-cyan-electric" size={20} /> Create New API Key
+              </DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Give your key a name to identify it easily. You'll only see the full key once.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-sm font-semibold tracking-widest text-slate-500 uppercase">Key Name</Label>
+                <Input
+                  id="name"
+                  placeholder="e.g. Production Mobile App"
+                  className="bg-white/5 border-white/10 focus:border-cyan-electric transition-all text-white placeholder:text-slate-600"
+                  value={newKeyName}
+                  onChange={(e) => setNewKeyName(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <button
+                disabled={!newKeyName || isCreatingKey}
+                onClick={handleCreateKey}
+                className="glow-button w-full flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isCreatingKey ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} />}
+                Generate Secure Key
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Info Alert */}
@@ -113,17 +180,20 @@ export default function APIKeysPage() {
                   <td className="px-6 py-4 text-slate-400">{keyItem.calls}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        keyItem.status === 'active'
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${keyItem.status === 'active'
                           ? 'bg-green-500/20 text-green-400'
                           : 'bg-slate-500/20 text-slate-400'
-                      }`}
+                        }`}
                     >
                       {keyItem.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 flex items-center justify-end gap-2">
-                    <button className="p-2 hover:bg-white/10 rounded transition-colors" title="Show/hide key">
+                  <td className="px-6 py-4 flex items-center justify-end gap-2 text-right">
+                    <button
+                      onClick={() => setShowKey(!showKey)}
+                      className="p-2 hover:bg-white/10 rounded transition-colors"
+                      title="Show/hide key"
+                    >
                       {showKey ? (
                         <EyeOff size={16} className="text-slate-400" />
                       ) : (
@@ -131,8 +201,15 @@ export default function APIKeysPage() {
                       )}
                     </button>
                     {keyItem.status === 'active' && (
-                      <button className="p-2 hover:bg-red-500/10 rounded transition-colors" title="Delete key">
-                        <Trash2 size={16} className="text-red-400" />
+                      <button
+                        onClick={() => {
+                          setKeyToDelete(keyItem.id)
+                          setIsDeleteModalOpen(true)
+                        }}
+                        className="p-2 hover:bg-red-500/10 rounded transition-colors text-red-500"
+                        title="Delete key"
+                      >
+                        <Trash2 size={16} />
                       </button>
                     )}
                   </td>
@@ -142,6 +219,35 @@ export default function APIKeysPage() {
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[400px] glass-effect-strong border-red-500/20 bg-obsidian-dark text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-red-500">Revoke API Key?</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              This action cannot be undone. Any applications using this key will immediately lose access to the VisionSpeak AI services.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Key ID: {keyToDelete}</p>
+          </div>
+          <DialogFooter className="gap-3">
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-sm font-black uppercase tracking-widest transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteKey}
+              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+            >
+              Confirm Revocation
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Key Management Tips */}
       <div className="glass-effect p-8 rounded-xl">

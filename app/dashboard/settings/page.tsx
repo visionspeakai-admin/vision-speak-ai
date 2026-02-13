@@ -1,3 +1,5 @@
+'use client'
+
 import { Save, Loader2, Camera, Trash2 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/components/providers/auth-provider'
@@ -101,8 +103,8 @@ export default function SettingsPage() {
 
       {message && (
         <div className={`p-4 rounded-xl border ${message.type === 'success'
-            ? 'bg-lime-500/10 border-lime-500/20 text-lime-400'
-            : 'bg-red-500/10 border-red-500/20 text-red-400'
+          ? 'bg-lime-500/10 border-lime-500/20 text-lime-400'
+          : 'bg-red-500/10 border-red-500/20 text-red-400'
           }`}>
           {message.text}
         </div>

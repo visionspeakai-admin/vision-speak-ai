@@ -96,7 +96,7 @@ export default function DocumentationPage() {
           { label: 'Community', href: '#', icon: '💬' },
         ].map((link) => (
           <a
-            key={link.href}
+            key={link.label}
             href={link.href}
             className="glass-effect p-4 rounded-lg text-center hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(0,242,255,0.2)] transition-all"
           >

@@ -45,13 +45,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const fetchUser = async (authToken: string) => {
         try {
-            const response = await api.get<User>('/user');
+            const response = await api.get<any>('/user');
             if (response.status === 'success' && response.data) {
-                setUser(response.data);
+                // The API reference says the user is in response.data.user
+                const userData = response.data.user || response.data;
+                setUser(userData);
+            } else {
+                console.warn('User fetch successful but returned unexpected format:', response);
             }
-        } catch (error) {
-            console.error('Failed to fetch user:', error);
-            // If unauthorized, token will be cleared by api client interceptor-like logic
+        } catch (error: any) {
+            console.error('Failed to fetch user profile:', {
+                message: error.message,
+                status: error.status,
+                code: error.code,
+                error
+            });
+            // If unauthorized or error, clear token to prevent loop
+            localStorage.removeItem('auth_token');
             setToken(null);
             setUser(null);
         } finally {

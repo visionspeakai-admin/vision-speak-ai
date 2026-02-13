@@ -3,12 +3,15 @@
 import { Navigation } from '@/components/shared/navigation'
 import { Footer } from '@/components/shared/footer'
 import { HeroSection } from '@/components/shared/hero-section'
-import { Camera, Hand, BarChart3, Download } from 'lucide-react'
+import { Camera, Hand, BarChart3, Download, ArrowRight, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '@/components/providers/auth-provider'
+import Link from 'next/link'
 
 export default function DemoPage() {
   const [mode, setMode] = useState<'lip-read' | 'gesture'>('lip-read')
   const [isRecording, setIsRecording] = useState(false)
+  const { user } = useAuth()
 
   return (
     <main className="min-h-screen bg-background">
@@ -21,6 +24,52 @@ export default function DemoPage() {
         description="Try our AI models in real-time using your webcam. See lip-reading and gesture recognition powered by NVIDIA."
         backgroundVariant="gradient"
       />
+
+      {/* Call-to-Action Section */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-8 mb-12">
+        <div className="glass-effect-strong border-2 border-cyan-500/20 rounded-2xl p-8 md:p-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-2xl md:text-3xl font-black uppercase mb-3 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">
+                Ready to Analyze?
+              </h2>
+              <p className="text-slate-400 text-sm md:text-base">
+                {user
+                  ? 'Access your full analytics dashboard to monitor API usage, view insights, and manage your account.'
+                  : 'Sign up now to access the full platform with API keys, analytics, and more powerful features.'}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              {user ? (
+                <Link
+                  href="/dashboard/overview"
+                  className="px-8 py-4 text-base font-black uppercase rounded-xl glow-button flex items-center gap-2 group"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  Go to Dashboard
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/signup"
+                    className="px-8 py-4 text-base font-black uppercase rounded-xl glow-button flex items-center gap-2 group"
+                  >
+                    Start Analyzing
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link
+                    href="/auth/login"
+                    className="px-8 py-4 text-base font-bold rounded-xl border border-white/10 hover:bg-white/5 transition-colors"
+                  >
+                    Login
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Demo Interface */}
       <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -35,11 +84,10 @@ export default function DemoPage() {
                   <p className="text-slate-400 text-sm mb-4">Click "Start Demo" to enable your webcam</p>
                   <button
                     onClick={() => setIsRecording(!isRecording)}
-                    className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                      isRecording
+                    className={`px-6 py-2 rounded-lg font-semibold transition-all ${isRecording
                         ? 'glow-button'
                         : 'border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10'
-                    }`}
+                      }`}
                   >
                     {isRecording ? 'Stop Demo' : 'Start Demo'}
                   </button>
@@ -50,22 +98,20 @@ export default function DemoPage() {
               <div className="flex gap-2 p-4 border-t border-white/10">
                 <button
                   onClick={() => setMode('lip-read')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
-                    mode === 'lip-read'
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${mode === 'lip-read'
                       ? 'glass-effect-strong border-cyan-400/50 text-white'
                       : 'glass-effect text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Camera size={18} />
                   Lip-Reading
                 </button>
                 <button
                   onClick={() => setMode('gesture')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
-                    mode === 'gesture'
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${mode === 'gesture'
                       ? 'glass-effect-strong border-cyan-400/50 text-white'
                       : 'glass-effect text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Hand size={18} />
                   Gesture Recognition

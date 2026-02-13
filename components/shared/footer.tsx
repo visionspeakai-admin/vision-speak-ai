@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Github, Linkedin, Twitter, Send, Loader2, CheckCircle2 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { getRecaptchaToken } from '@/components/providers/recaptcha-provider'
+import { Logo } from './logo'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -39,26 +40,19 @@ export function Footer() {
     Product: [
       { label: 'Features', href: '/#features' },
       { label: 'Pricing', href: '/pricing' },
-      { label: 'Security', href: '#' },
-      { label: 'Status', href: '#' },
     ],
     Company: [
-      { label: 'About', href: '#' },
-      { label: 'Blog', href: '#' },
-      { label: 'Careers', href: '#' },
+      { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
     ],
     Developers: [
       { label: 'Documentation', href: '/developers' },
       { label: 'API Reference', href: '/developers#api' },
-      { label: 'GitHub', href: '#' },
-      { label: 'Community', href: '#' },
     ],
     Legal: [
-      { label: 'Privacy', href: '#' },
-      { label: 'Terms', href: '#' },
-      { label: 'Cookies', href: '#' },
-      { label: 'License', href: '#' },
+      { label: 'Privacy', href: '/privacy' },
+      { label: 'Terms', href: '/terms' },
+      { label: 'Cookies', href: '/cookies' },
     ],
   }
 
@@ -68,12 +62,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-6 gap-12 mb-16">
           {/* Brand & Newsletter Column */}
           <div className="md:col-span-2 space-y-6">
-            <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-                <span className="text-obsidian-dark font-black text-sm">VS</span>
-              </div>
-              <span className="text-glow">VisionSpeak</span>
-            </Link>
+            <Logo />
             <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
               AI-powered Lip-Reading & Gesture Recognition powered by NVIDIA technology. Follow our journey.
             </p>
@@ -151,9 +140,9 @@ export function Footer() {
             © {currentYear} VisionSpeakAI. Engineered with NVIDIA TensorRT.
           </p>
           <div className="flex gap-6 text-[10px] text-slate-500 uppercase tracking-tighter">
-            <a href="#" className="hover:text-slate-300 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-300 transition-colors">Terms of Service</a>
+            <Link href="/developers" className="hover:text-slate-300 transition-colors">Documentation</Link>
+            <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

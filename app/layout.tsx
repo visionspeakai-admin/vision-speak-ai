@@ -31,6 +31,8 @@ export const viewport: Viewport = {
 
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { RecaptchaProvider } from '@/components/providers/recaptcha-provider'
+import { CookieConsent } from '@/components/shared/cookie-consent'
+import { ChatbotWidget } from '@/components/shared/chatbot-widget'
 
 export default function RootLayout({
   children,
@@ -45,6 +47,8 @@ export default function RootLayout({
           <RecaptchaProvider>
             <BackgroundEffects />
             {children}
+            <CookieConsent />
+            <ChatbotWidget />
           </RecaptchaProvider>
         </AuthProvider>
       </body>

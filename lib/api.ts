@@ -29,14 +29,33 @@ async function request<T>(
     headers,
   });
 
-  const data: ApiResponse<T> = await response.json();
+  let data: any;
+  try {
+    const text = await response.text();
+    data = text ? JSON.parse(text) : {};
+  } catch (err) {
+    data = {
+      status: 'error',
+      message: `Failed to parse response: ${response.statusText}`,
+      code: response.status
+    };
+  }
 
   if (!response.ok) {
     if (response.status === 401 && typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
-      // Potential redirect to login could happen here or in AuthContext
     }
-    throw data;
+
+    // Ensure the error thrown is an object with a message
+    const errorResponse: ApiResponse<T> = {
+      status: 'error',
+      message: data.message || `Request failed with status ${response.status}`,
+      code: response.status,
+      timestamp: new Date().toISOString(),
+      ...data
+    };
+
+    throw errorResponse;
   }
 
   return data;

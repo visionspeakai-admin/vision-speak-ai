@@ -1,212 +1,314 @@
+'use client'
+
 import Link from 'next/link'
-import { TrendingUp, Zap, Users, AlertCircle, Loader2 } from 'lucide-react'
+import {
+  TrendingUp,
+  Zap,
+  Users,
+  AlertCircle,
+  Loader2,
+  Upload,
+  Play,
+  Activity,
+  Cpu,
+  Server,
+  CloudLightning,
+  Eye,
+  FileCode,
+  ShieldCheck
+} from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
-import { useEffect, useState } from 'react'
-import { api } from '@/lib/api'
+import { useEffect, useState, useRef } from 'react'
+
+type SimulationState = 'IDLE' | 'UPLOADING' | 'PROCESSING' | 'COMPLETED'
 
 export default function DashboardOverview() {
   const { user } = useAuth()
-  const [recentActivity, setRecentActivity] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [simState, setSimState] = useState<SimulationState>('IDLE')
+  const [progress, setProgress] = useState(0)
+  const [infraStats, setInfraStats] = useState({
+    gpuLoad: 12,
+    latency: 42,
+    throughput: 1.2
+  })
 
+  // Randomized Infra Stats
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const response = await api.get<any[]>('/payments')
-        if (response.status === 'success' && response.data) {
-          const activities = response.data.slice(0, 5).map(payment => ({
-            event: `Payment for ${payment.plan_name}`,
-            time: new Date(payment.paid_at).toLocaleDateString(),
-            status: payment.status === 'paid' ? 'success' : 'info'
-          }))
-          setRecentActivity(activities)
-        }
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error)
-      } finally {
-        setIsLoading(false)
+    const interval = setInterval(() => {
+      setInfraStats(prev => ({
+        gpuLoad: Math.floor(Math.random() * 20) + (simState === 'PROCESSING' ? 60 : 10),
+        latency: Math.floor(Math.random() * 10) + (simState === 'PROCESSING' ? 85 : 35),
+        throughput: parseFloat((Math.random() * 0.5 + (simState === 'PROCESSING' ? 2.5 : 0.8)).toFixed(2))
+      }))
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [simState])
+
+  const startSimulation = () => {
+    setSimState('UPLOADING')
+    let p = 0
+    const uploadInt = setInterval(() => {
+      p += 5
+      setProgress(p)
+      if (p >= 100) {
+        clearInterval(uploadInt)
+        setSimState('PROCESSING')
+        p = 0
+        const processInt = setInterval(() => {
+          p += 2
+          setProgress(p)
+          if (p >= 100) {
+            clearInterval(processInt)
+            setSimState('COMPLETED')
+          }
+        }, 100)
       }
-    }
-    fetchDashboardData()
-  }, [])
+    }, 50)
+  }
 
-  const stats = [
-    {
-      label: 'API Calls (30d)',
-      value: '2.4M',
-      change: '+12.5%',
-      positive: true,
-      icon: TrendingUp,
-      color: 'text-cyan-400',
-    },
-    {
-      label: 'Avg Latency',
-      value: '78ms',
-      change: '-3.2%',
-      positive: true,
-      icon: Zap,
-      color: 'text-lime-400',
-    },
-    {
-      label: 'Active Users',
-      value: '284',
-      change: '+8.1%',
-      positive: true,
-      icon: Users,
-      color: 'text-purple-400',
-    },
-    {
-      label: 'Error Rate',
-      value: '0.12%',
-      change: '-0.05%',
-      positive: true,
-      icon: AlertCircle,
-      color: 'text-red-400',
-    },
-  ]
-
-  const defaultActivity = [
-    { event: 'Account created', time: 'Just now', status: 'success' },
-  ]
+  const resetSim = () => {
+    setSimState('IDLE')
+    setProgress(0)
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="heading-lg text-white mb-2">Welcome back, {user?.first_name || 'Explorer'}</h1>
-        <p className="text-slate-400">Here's what's happening with your account and API usage.</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon
-          return (
-            <div key={index} className="glass-effect p-6 rounded-xl">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center ${stat.color}`}>
-                  <Icon size={24} />
-                </div>
-                <span className={`text-xs font-semibold ${stat.positive ? 'text-green-400' : 'text-red-400'}`}>
-                  {stat.change}
-                </span>
-              </div>
-              <p className="text-slate-400 text-sm mb-1">{stat.label}</p>
-              <p className="text-3xl font-bold text-white">{stat.value}</p>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Usage Chart Placeholder */}
-        <div className="lg:col-span-2 card-modern !p-0 overflow-hidden group">
-          <div className="p-8 border-b border-white/5 flex items-center justify-between">
-            <h2 className="text-xs font-black text-white uppercase tracking-[0.2em]">Neural Usage Matrix (30D)</h2>
-            <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-cyan-electric/50" />
-              <div className="w-2 h-2 rounded-full bg-lime-bio/50" />
-            </div>
+    <div className="space-y-8 animate-fade-in">
+      {/* Simulation Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">
+            Unit-01 <span className="text-cyan-electric">Active Terminal</span>
+          </h1>
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">Welcome back, {user?.first_name || 'Operator'}</p>
+        </div>
+        <div className="flex gap-4">
+          <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mainframe Link Stable</span>
           </div>
-          <div className="h-[400px] bg-obsidian-dark/50 flex flex-col items-center justify-center relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,255,0.05)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <div className="w-full h-full absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        </div>
+      </div>
 
-            <div className="relative z-10 flex flex-col items-center gap-4">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
-                <TrendingUp size={32} className="text-cyan-electric" />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Main Simulation Area (Widget A & B) */}
+        <div className="xl:col-span-2 space-y-8">
+          {/* Widget A & B Container */}
+          <div className="card-modern !p-0 overflow-hidden relative group min-h-[500px] flex flex-col">
+            <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+              <div className="flex items-center gap-3">
+                <Activity size={16} className="text-cyan-electric" />
+                <h2 className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Vision Core Simulation</h2>
               </div>
-              <p className="font-black text-[10px] uppercase tracking-[0.4em] text-slate-500">Telemetry Feed Incoming...</p>
+              <div className="flex items-center gap-2">
+                <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Powered by</span>
+                <span className="text-[8px] font-black text-white uppercase tracking-widest border border-white/20 px-2 py-0.5 rounded">NVIDIA Riva SDK</span>
+              </div>
+            </div>
+
+            <div className="flex-1 relative flex flex-col items-center justify-center p-8 transition-all duration-500">
+              {/* IDLE STATE */}
+              {simState === 'IDLE' && (
+                <div className="text-center space-y-6 max-w-sm animate-fade-up">
+                  <div className="w-24 h-24 mx-auto rounded-3xl bg-cyan-electric/5 border-2 border-dashed border-cyan-electric/20 flex items-center justify-center group-hover:border-cyan-electric/50 transition-colors">
+                    <Upload size={32} className="text-cyan-electric/50 group-hover:text-cyan-electric transition-colors" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-black uppercase tracking-widest text-sm mb-2">Ingest Media Stream</h3>
+                    <p className="text-slate-500 text-xs leading-relaxed">Upload .MP4, .WAV or connect a live RTSP stream to begin neural analysis.</p>
+                  </div>
+                  <button
+                    onClick={startSimulation}
+                    className="glow-button w-full flex items-center justify-center gap-2"
+                  >
+                    <Play size={16} /> Init Sequence
+                  </button>
+                </div>
+              )}
+
+              {/* UPLOADING STATE */}
+              {simState === 'UPLOADING' && (
+                <div className="w-full max-w-md space-y-8 animate-fade-in">
+                  <div className="text-center">
+                    <Loader2 size={40} className="mx-auto text-cyan-electric animate-spin mb-4" />
+                    <h3 className="text-white font-black uppercase tracking-[0.4em] text-xs">Synchronizing Buffers...</h3>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] font-black text-cyan-electric uppercase tracking-widest">
+                      <span>UPLOADING DATA</span>
+                      <span>{progress}%</span>
+                    </div>
+                    <div className="h-2 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
+                      <div className="h-full bg-cyan-electric rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PROCESSING STATE (Widget B Proper) */}
+              {simState === 'PROCESSING' && (
+                <div className="w-full flex flex-col items-center animate-fade-in">
+                  {/* Neural Graph Visualizer Mock */}
+                  <div className="relative w-full h-64 mb-12 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,255,0.1)_0%,transparent_70%)] animate-pulse" />
+
+                    {/* Concentric Circles */}
+                    <div className="absolute w-48 h-48 border border-cyan-electric/20 rounded-full animate-[spin_10s_linear_infinite]" />
+                    <div className="absolute w-64 h-64 border border-cyan-electric/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+
+                    {/* Floating Nodes */}
+                    <div className="grid grid-cols-4 gap-8 relative z-10 w-full max-w-md">
+                      {[...Array(8)].map((_, i) => (
+                        <div key={i} className="flex flex-col items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${progress > (i * 12) ? 'bg-cyan-electric shadow-[0_0_10px_rgba(0,242,255,1)]' : 'bg-slate-800'} transition-all duration-500`} />
+                          <div className="h-12 w-0.5 bg-gradient-to-b from-cyan-electric/50 to-transparent" />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                      <div className="text-[8px] font-black text-cyan-electric uppercase tracking-[1em] mb-2 pl-[1em]">PROCESSING</div>
+                      <div className="text-4xl font-black text-white">{progress}%</div>
+                    </div>
+                  </div>
+
+                  <div className="w-full max-w-sm space-y-4">
+                    <div className="flex items-center justify-between px-4 py-2 rounded-lg bg-white/5 border border-white/10">
+                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Model</span>
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">TENSOR-PRO-V4</span>
+                    </div>
+                    <div className="flex items-center justify-between px-4 py-2 rounded-lg bg-white/5 border border-white/10">
+                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Compute Shards</span>
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">12/12 ACTIVE</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* COMPLETED STATE */}
+              {simState === 'COMPLETED' && (
+                <div className="text-center space-y-8 animate-fade-up max-w-xl">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center text-green-500">
+                    <ShieldCheck size={40} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">Neural Link Successful</h3>
+                    <p className="text-slate-500 text-sm">Synthetic analysis produced 482 points of interest. Narrative output ready for review.</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-left">
+                    <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Sentiment Accuracy</h4>
+                      <p className="text-xl font-bold text-white">98.4%</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Ocular Keyframes</h4>
+                      <p className="text-xl font-bold text-white">12,042</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button onClick={resetSim} className="flex-1 px-6 py-3 rounded-xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                      Clear Cache
+                    </button>
+                    <button className="flex-1 glow-button">
+                      Export Report
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Status Bar */}
+            <div className="p-4 border-t border-white/5 bg-obsidian-dark flex items-center justify-between px-6">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-electric animate-pulse" />
+                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Core Status: ONLINE</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Encrpytion: AES-256</span>
+                </div>
+              </div>
+              <div className="text-[8px] font-black text-slate-600 uppercase tracking-[0.2em] font-mono">
+                VS-ID: {String(user?.id || '').slice(0, 8) || 'COMM-ALPHA'}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Actions & Plan */}
+        {/* Sidebar Widgets (Widget C & Info) */}
         <div className="space-y-8">
+          {/* Widget C: Infrastructure Health */}
           <div className="card-modern">
-            <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 border-b border-white/5 pb-4">Terminal Commands</h3>
-            <div className="space-y-4">
-              <Link
-                href="/dashboard/api-keys"
-                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-electric/40 hover:bg-cyan-electric/5 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-white group"
-              >
-                Manage API Keys
-              </Link>
-              <Link
-                href="/documentation"
-                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-lime-bio/40 hover:bg-lime-bio/5 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-white"
-              >
-                Access Documentation
-              </Link>
-              <Link
-                href="/dashboard/settings"
-                className="block w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-white"
-              >
-                System Settings
-              </Link>
-            </div>
-          </div>
+            <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-6 border-b border-white/5 pb-4 flex items-center gap-2">
+              <Server size={14} className="text-lime-bio" /> Infrastructure Health
+            </h3>
 
-          {/* Usage Summary */}
-          <div className="card-modern border-cyan-electric/20">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xs font-black text-white uppercase tracking-[0.2em]">CURRENT PLAN</h3>
-              <span className="px-3 py-1 rounded-lg bg-cyan-electric/10 text-cyan-electric text-[10px] font-black uppercase tracking-widest">{user?.current_plan || 'COMMUNITY'}</span>
-            </div>
             <div className="space-y-6">
+              {/* GPU Load */}
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">API QUOTA USAGE</span>
-                  <span className="text-xs font-black text-cyan-electric">80.0%</span>
+                <div className="flex justify-between items-end mb-2">
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">GPU Neural Load</span>
+                  <span className={`text-xs font-black ${infraStats.gpuLoad > 50 ? 'text-lime-bio' : 'text-cyan-electric'}`}>{infraStats.gpuLoad}%</span>
                 </div>
-                <div className="h-2.5 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
-                  <div className="h-full w-4/5 bg-gradient-to-r from-cyan-electric to-cyan-500 rounded-full shadow-[0_0_10px_rgba(0,242,255,0.4)]" />
+                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-1000 ${infraStats.gpuLoad > 50 ? 'bg-lime-bio' : 'bg-cyan-electric'}`}
+                    style={{ width: `${infraStats.gpuLoad}%` }}
+                  />
                 </div>
-                <p className="mt-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest">2.4M / 3M REQUESTS</p>
+              </div>
+
+              {/* Latency */}
+              <div>
+                <div className="flex justify-between items-end mb-2">
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Process Latency</span>
+                  <span className="text-xs font-black text-white">{infraStats.latency}ms</span>
+                </div>
+                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-white/20 transition-all duration-1000"
+                    style={{ width: `${(infraStats.latency / 150) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Throughput */}
+              <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Data Throughput</span>
+                <span className="text-xs font-black text-white">{infraStats.throughput} GB/s</span>
               </div>
             </div>
           </div>
+
+          {/* Quick Stats Summary */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+              <Eye size={16} className="text-purple-500 mb-2" />
+              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Scenes</p>
+              <p className="text-lg font-bold text-white tracking-tighter">1,204</p>
+            </div>
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+              <FileCode size={16} className="text-amber-500 mb-2" />
+              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">API Calls</p>
+              <p className="text-lg font-bold text-white tracking-tighter">42.8k</p>
+            </div>
+          </div>
+
+          {/* Upgrade Alert (Mock Billing Link) */}
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-electric/20 to-purple-600/10 border border-cyan-electric/30 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform">
+              <CloudLightning size={48} className="text-white" />
+            </div>
+            <h4 className="text-sm font-black text-white uppercase tracking-tight mb-2">Upgrade to Pro</h4>
+            <p className="text-[10px] text-slate-400 leading-relaxed mb-4">Unlimited neural streams and priority GPU queuing.</p>
+            <Link href="/pricing" className="block w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-center text-[10px] font-black uppercase tracking-widest text-white transition-all border border-white/10">
+              Review Billing
+            </Link>
+          </div>
         </div>
       </div>
-
-      {/* Recent Activity */}
-      <div className="glass-effect p-8 rounded-xl">
-        <h2 className="text-lg font-bold text-white mb-6">Recent Activity</h2>
-        <div className="space-y-4">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="animate-spin text-cyan-400" />
-            </div>
-          ) : (recentActivity.length > 0 ? recentActivity : defaultActivity).map((activity, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
-              <div>
-                <p className="font-semibold text-white text-sm">{activity.event}</p>
-                <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
-              </div>
-              <div
-                className={`w-3 h-3 rounded-full ${activity.status === 'success'
-                  ? 'bg-green-500'
-                  : activity.status === 'info'
-                    ? 'bg-cyan-500'
-                    : 'bg-yellow-500'
-                  }`}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Upgrade CTA */}
-      {!user?.current_plan && (
-        <div className="glass-effect-strong border-cyan-400/50 shadow-[0_0_30px_rgba(0,242,255,0.3)] p-8 rounded-xl text-center">
-          <h3 className="text-lg font-bold text-white mb-3">Scale your application</h3>
-          <p className="text-slate-400 mb-6">Unlock higher rate limits and enterprise-grade features with our Pro plan.</p>
-          <Link href="/pricing" className="inline-block px-8 py-3 glow-button">
-            View Pricing
-          </Link>
-        </div>
-      )}
     </div>
   )
 }

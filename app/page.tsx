@@ -80,16 +80,41 @@ export default function Home() {
         secondaryCta={{ text: 'Watch Demo', href: '/demo' }}
         backgroundVariant="gradient"
       >
-        <div className="relative w-full h-80 md:h-96 mx-auto mt-12 rounded-2xl glass-effect overflow-hidden flex items-center justify-center group">
-          {/* Animated Background Scan Line */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-electric/10 to-transparent w-full h-1/2 -top-full animate-scan" />
+        <div className="relative w-full h-80 md:h-[450px] mx-auto mt-16 rounded-3xl glass-effect overflow-hidden group border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+          {/* Background Tech Image */}
+          <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
+            <img
+              src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2000"
+              alt="Cyber Tech"
+              className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent" />
+          </div>
 
-          <div className="text-center relative z-10 transition-transform duration-500 group-hover:scale-110">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-cyan-electric/10 flex items-center justify-center border-2 border-cyan-electric/30 shadow-[0_0_30px_rgba(0,242,255,0.2)]">
-              <Eye className="w-12 h-12 text-cyan-electric animate-pulse-cyan" />
+          {/* Animated Background Scan Line */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-electric/20 to-transparent w-full h-1/2 -top-full animate-scan z-10" />
+
+          <div className="relative h-full flex flex-col items-center justify-center z-20 p-8">
+            <div className="w-20 h-20 mb-6 rounded-2xl bg-cyan-electric/10 flex items-center justify-center border-2 border-cyan-electric/30 shadow-[0_0_30px_rgba(0,242,255,0.3)] backdrop-blur-md">
+              <Eye className="w-10 h-10 text-cyan-electric animate-pulse-cyan" />
             </div>
-            <p className="text-cyan-electric font-mono text-xs tracking-widest uppercase mb-1">Neural-Link Active</p>
-            <p className="text-white font-bold text-lg">Interactive Vision Engine</p>
+            <div className="space-y-2">
+              <p className="text-cyan-electric font-mono text-xs tracking-[0.3em] uppercase mb-1 drop-shadow-glow">Neural-Link Active</p>
+              <h3 className="text-white font-black text-2xl uppercase tracking-tighter">Interactive Vision Engine</h3>
+              <p className="text-slate-400 text-sm max-w-md mx-auto">Analyzing real-time ocular and manual data streams via NVIDIA TensorRT.</p>
+            </div>
+
+            {/* Mock HUD Elements */}
+            <div className="absolute top-6 left-6 text-left font-mono text-[10px] text-cyan-electric/50 space-y-1 hidden md:block">
+              <p>LATENCY: 42MS</p>
+              <p>ACCURACY: 98.4%</p>
+              <p>FRAME_RATE: 120FPS</p>
+            </div>
+            <div className="absolute bottom-6 right-6 text-right font-mono text-[10px] text-lime-bio/50 space-y-1 hidden md:block">
+              <p>NVIDIA_CUDA_READY</p>
+              <p>ENCRYPTION_AES256</p>
+              <p>MODEL_V4.2_STABLE</p>
+            </div>
           </div>
         </div>
       </HeroSection>
