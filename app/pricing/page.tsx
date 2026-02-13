@@ -30,6 +30,15 @@ interface Plan {
   features?: string[];
 }
 
+interface Testimonial {
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  rating: number;
+  imageUrl: string;
+}
+
 const MOCK_PLANS: Plan[] = [
   {
     id: 1,
@@ -67,6 +76,49 @@ const MOCK_PLANS: Plan[] = [
       "ADVANCED FORENSICS",
       "RAW API ACCESS",
     ],
+  },
+];
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    quote:
+      "VisionSpeakAI transformed how we handle accessibility. Our team can now reach 40% more users without additional resources. The accuracy is incredible.",
+    author: "Sarah Mitchell",
+    role: "Accessibility Director",
+    company: "TechAccessHub Inc.",
+    rating: 5,
+    imageUrl:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+  },
+  {
+    quote:
+      "The real-time processing speed is unmatched. We integrated VisionSpeakAI into our retail operations and saw a 35% improvement in customer engagement metrics.",
+    author: "Marcus Chen",
+    role: "CTO",
+    company: "RetailVision Solutions",
+    rating: 5,
+    imageUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+  },
+  {
+    quote:
+      "Enterprise support is exceptional. Their team helped us scale from 100 to 1M+ requests per day seamlessly. Worth every penny.",
+    author: "Jennifer Rodriguez",
+    role: "Head of Innovation",
+    company: "CloudScale Analytics",
+    rating: 5,
+    imageUrl:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+  },
+  {
+    quote:
+      "The API documentation is thorough and the developer experience is smooth. We had our integration running in production within 48 hours.",
+    author: "David Kim",
+    role: "Senior Engineer",
+    company: "NeuralWorks",
+    rating: 5,
+    imageUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
   },
 ];
 
@@ -326,6 +378,73 @@ export default function PricingPage() {
                 <span className='text-primary font-bold mt-4'>
                   {addon.price}
                 </span>
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className='py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative'>
+        {/* Background Elements */}
+        <div className='absolute inset-0 -z-10'>
+          <div className='absolute top-0 left-1/4 w-96 h-96 bg-cyan-electric/10 rounded-full blur-3xl opacity-20'></div>
+          <div className='absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl opacity-20'></div>
+        </div>
+
+        <ScrollReveal className='text-center mb-16'>
+          <h2 className='heading-lg mb-4 text-pretty'>What Our Users Say</h2>
+          <p className='text-muted-foreground text-lg max-w-2xl mx-auto'>
+            Join thousands of businesses transforming their operations with
+            VisionSpeakAI
+          </p>
+        </ScrollReveal>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {TESTIMONIALS.map((testimonial, index) => (
+            <FadeInUp key={index} delay={index * 0.1}>
+              <div className='card-modern group transition-all duration-300 min-h-[280px] flex flex-col'>
+                {/* Star Rating */}
+                <div className='flex gap-1 mb-4'>
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className='w-5 h-5 text-yellow-400'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'
+                    >
+                      <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Testimonial Text */}
+                <p className='text-foreground mb-6 flex-grow italic text-sm leading-relaxed'>
+                  "{testimonial.quote}"
+                </p>
+
+                {/* Author Avatar & Info */}
+                <div className='border-t border-white/10 pt-4 flex items-center gap-4'>
+                  {/* Avatar Image */}
+                  <img
+                    src={testimonial.imageUrl}
+                    alt={testimonial.author}
+                    className='flex-shrink-0 w-12 h-12 rounded-full object-cover border-2 border-cyan-electric/60 group-hover:border-lime-bio group-hover:shadow-[0_0_15px_rgba(204,255,0,0.8)] transition-all duration-300'
+                  />
+
+                  {/* Author Details */}
+                  <div>
+                    <p className='font-semibold text-foreground'>
+                      {testimonial.author}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {testimonial.role}
+                    </p>
+                    <p className='text-xs text-cyan-electric font-bold mt-1'>
+                      {testimonial.company}
+                    </p>
+                  </div>
+                </div>
               </div>
             </FadeInUp>
           ))}
