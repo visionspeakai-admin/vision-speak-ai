@@ -18,12 +18,15 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useUserPlan } from "@/hooks/use-user-plan";
+import { CurrentPlanCard } from "@/components/dashboard/current-plan-card";
 import { useEffect, useState, useRef } from "react";
 
 type SimulationState = "IDLE" | "UPLOADING" | "PROCESSING" | "COMPLETED";
 
 export default function DashboardOverview() {
   const { user } = useAuth();
+  const { plan, isLoading: isPlanLoading } = useUserPlan();
   const [simState, setSimState] = useState<SimulationState>("IDLE");
   const [progress, setProgress] = useState(0);
   const [infraStats, setInfraStats] = useState({
@@ -307,6 +310,9 @@ export default function DashboardOverview() {
 
         {/* Sidebar Widgets (Widget C & Info) */}
         <div className='space-y-8'>
+          {/* Current Plan Card */}
+          <CurrentPlanCard plan={plan} isLoading={isPlanLoading} />
+
           {/* Widget C: Infrastructure Health */}
           <div className='card-modern'>
             <h3 className='text-[10px] font-black text-white uppercase tracking-[0.3em] mb-6 border-b border-white/5 pb-4 flex items-center gap-2'>
