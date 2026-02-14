@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowLeft,
   Shield,
@@ -12,186 +12,245 @@ import {
   Loader2,
   Eye,
   EyeOff,
-} from 'lucide-react'
-import { useAuth } from '@/components/providers/auth-provider'
-import { api } from '@/lib/api'
-import { Navigation } from '@/components/shared/navigation'
-import { Footer } from '@/components/shared/footer'
+} from "lucide-react";
+import { useAuth } from "@/components/providers/auth-provider";
+import { api } from "@/lib/api";
+import { DEFAULT_PLANS } from "@/lib/plans";
+import { Navigation } from "@/components/shared/navigation";
+import { Footer } from "@/components/shared/footer";
 
 interface Plan {
-  id: number
-  slug: string
-  name: string
-  description: string
-  price: number
-  price_yearly?: number
-  features?: string[]
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  price: number;
+  price_yearly?: number | null;
+  features?: string[];
 }
 
 interface CardData {
-  cardNumber: string
-  cardName: string
-  expiryMonth: string
-  expiryYear: string
-  cvv: string
+  cardNumber: string;
+  cardName: string;
+  expiryMonth: string;
+  expiryYear: string;
+  cvv: string;
 }
 
 export function CheckoutContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { user, isAuthenticated } = useAuth()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, isAuthenticated } = useAuth();
 
-  const [plan, setPlan] = useState<Plan | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState('')
+  const [plan, setPlan] = useState<Plan | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
   const [cardData, setCardData] = useState<CardData>({
-    cardNumber: '',
-    cardName: '',
-    expiryMonth: '',
-    expiryYear: '',
-    cvv: '',
-  })
-  const [showCvv, setShowCvv] = useState(false)
+    cardNumber: "",
+    cardName: "",
+    expiryMonth: "",
+    expiryYear: "",
+    cvv: "",
+  });
+  const [showCvv, setShowCvv] = useState(false);
   const [billingAddress, setBillingAddress] = useState({
-    fullName: user?.first_name || '',
-    email: user?.email || '',
-    country: '',
-    state: '',
-    city: '',
-    zipCode: '',
-  })
-  const [acceptTerms, setAcceptTerms] = useState(false)
+    fullName: user?.first_name || "",
+    email: user?.email || "",
+    country: "",
+    state: "",
+    city: "",
+    zipCode: "",
+  });
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const planSlug = searchParams.get('plan')
-  const interval = searchParams.get('interval') || 'monthly'
+  const planSlug = searchParams.get("plan");
+  const interval = searchParams.get("interval") || "monthly";
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push(`/auth/login?redirect=/checkout?plan=${planSlug}&interval=${interval}`)
-      return
+      router.push(
+        `/auth/login?redirect=/checkout?plan=${planSlug}&interval=${interval}`,
+      );
+      return;
     }
 
     const fetchPlan = async () => {
       if (!planSlug) {
-        setError('No plan selected')
-        setIsLoading(false)
-        return
+        setError("No plan selected");
+        setIsLoading(false);
+        return;
       }
 
       try {
-        const response = await api.get<Plan>(`/subscription-plans/${planSlug}`)
-        if (response.status === 'success' && response.data) {
-          setPlan(response.data)
+        // 1) Check available plans on backend. If none, attempt to seed from defaults.
+        try {
+          const listResp = await api.get<Plan[]>("/subscription-plans");
+          if (
+            listResp.status === "success" &&
+            Array.isArray(listResp.data) &&
+            listResp.data.length === 0
+          ) {
+            // backend empty -> seed best-effort
+            for (const p of DEFAULT_PLANS) {
+              const payload = {
+                name: p.name,
+                slug: p.slug,
+                description: p.description,
+                price: p.price,
+                price_yearly: p.price_yearly ?? null,
+                features: p.features ?? [],
+                currency: "USD",
+                interval: "monthly",
+                is_active: true,
+              } as any;
+
+              try {
+                await api.post("/subscription-plans", payload);
+              } catch (seedErr) {
+                console.warn(
+                  "Seeding plan failed (continuing):",
+                  p.slug,
+                  seedErr,
+                );
+              }
+            }
+          }
+        } catch (checkErr) {
+          // non-fatal: continue to fetch single plan (network/admin may block list)
+          console.warn("Could not verify/seed backend plans:", checkErr);
+        }
+
+        // 2) Fetch the requested plan (after possible seed attempt)
+        const response = await api.get<Plan>(`/subscription-plans/${planSlug}`);
+        if (response.status === "success" && response.data) {
+          setPlan(response.data);
         } else {
-          setError('Plan not found')
+          setError("Plan not found");
+          // fallback to local default plans
+          const fallback = DEFAULT_PLANS.find((p) => p.slug === planSlug);
+          if (fallback) setPlan(fallback);
         }
       } catch (err) {
-        console.error('Failed to fetch plan:', err)
-        setError('Failed to load plan details')
+        console.error("Failed to fetch plan after seed attempt:", err);
+        // final fallback to local defaults
+        const fallback = DEFAULT_PLANS.find((p) => p.slug === planSlug);
+        if (fallback) {
+          setPlan(fallback);
+        } else {
+          setError("Failed to load plan details");
+        }
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchPlan()
-  }, [planSlug, interval, isAuthenticated, router])
+    fetchPlan();
+  }, [planSlug, interval, isAuthenticated, router]);
 
   const handleCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    let formattedValue = value
+    const { name, value } = e.target;
+    let formattedValue = value;
 
-    if (name === 'cardNumber') {
-      formattedValue = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim()
-    } else if (name === 'expiryMonth' || name === 'expiryYear') {
-      formattedValue = value.replace(/\D/g, '')
-    } else if (name === 'cvv') {
-      formattedValue = value.replace(/\D/g, '')
+    if (name === "cardNumber") {
+      formattedValue = value
+        .replace(/\s/g, "")
+        .replace(/(\d{4})/g, "$1 ")
+        .trim();
+    } else if (name === "expiryMonth" || name === "expiryYear") {
+      formattedValue = value.replace(/\D/g, "");
+    } else if (name === "cvv") {
+      formattedValue = value.replace(/\D/g, "");
     }
 
-    setCardData(prev => ({
+    setCardData((prev) => ({
       ...prev,
-      [name]: formattedValue
-    }))
-  }
+      [name]: formattedValue,
+    }));
+  };
 
   const handleBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setBillingAddress(prev => ({
+    const { name, value } = e.target;
+    setBillingAddress((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const validateCard = () => {
-    if (!cardData.cardNumber || cardData.cardNumber.replace(/\s/g, '').length !== 16) {
-      setError('Please enter a valid 16-digit card number')
-      return false
+    if (
+      !cardData.cardNumber ||
+      cardData.cardNumber.replace(/\s/g, "").length !== 16
+    ) {
+      setError("Please enter a valid 16-digit card number");
+      return false;
     }
     if (!cardData.cardName.trim()) {
-      setError('Please enter the cardholder name')
-      return false
+      setError("Please enter the cardholder name");
+      return false;
     }
     if (!cardData.expiryMonth || !cardData.expiryYear) {
-      setError('Please enter the expiry date')
-      return false
+      setError("Please enter the expiry date");
+      return false;
     }
     if (!cardData.cvv || cardData.cvv.length < 3) {
-      setError('Please enter a valid CVV')
-      return false
+      setError("Please enter a valid CVV");
+      return false;
     }
     if (!billingAddress.fullName.trim() || !billingAddress.email.trim()) {
-      setError('Please fill in all billing details')
-      return false
+      setError("Please fill in all billing details");
+      return false;
     }
     if (!acceptTerms) {
-      setError('Please accept the terms and conditions')
-      return false
+      setError("Please accept the terms and conditions");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
 
     if (!validateCard()) {
-      return
+      return;
     }
 
-    setIsProcessing(true)
+    setIsProcessing(true);
 
     try {
-      const response = await api.post('/payments/process', {
+      const response = await api.post("/payments/process", {
         plan_id: plan?.id,
-        interval: interval === 'yearly' ? 'yearly' : 'monthly',
-        card_number: cardData.cardNumber.replace(/\s/g, ''),
+        interval: interval === "yearly" ? "yearly" : "monthly",
+        card_number: cardData.cardNumber.replace(/\s/g, ""),
         card_name: cardData.cardName,
-        expiry_month: cardData.expiryMonth.padStart(2, '0'),
+        expiry_month: cardData.expiryMonth.padStart(2, "0"),
         expiry_year: `20${cardData.expiryYear}`,
         cvv: cardData.cvv,
         billing_address: billingAddress,
-      })
+      });
 
-      if (response.status === 'success') {
-        router.push('/dashboard?payment=success')
+      if (response.status === "success") {
+        router.push("/dashboard?payment=success");
       } else {
-        setError(response.message || 'Payment processing failed')
+        setError(response.message || "Payment processing failed");
       }
     } catch (err: any) {
-      console.error('Payment error:', err)
-      setError(err.message || 'An error occurred while processing your payment')
+      console.error("Payment error:", err);
+      setError(
+        err.message || "An error occurred while processing your payment",
+      );
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
       <div className='min-h-screen bg-background flex items-center justify-center'>
         <Loader2 size={48} className='text-cyan-electric animate-spin' />
       </div>
-    )
+    );
   }
 
   if (!plan) {
@@ -202,7 +261,7 @@ export function CheckoutContent() {
           <div className='text-center'>
             <AlertCircle size={48} className='text-red-400 mx-auto mb-4' />
             <h1 className='text-2xl font-black text-white mb-2'>Error</h1>
-            <p className='text-slate-400 mb-6'>{error || 'Plan not found'}</p>
+            <p className='text-slate-400 mb-6'>{error || "Plan not found"}</p>
             <Link href='/pricing' className='glow-button inline-block'>
               Back to Pricing
             </Link>
@@ -210,11 +269,11 @@ export function CheckoutContent() {
         </div>
         <Footer />
       </div>
-    )
+    );
   }
 
-  const displayPrice = plan.price
-  const totalAmount = displayPrice
+  const displayPrice = plan.price;
+  const totalAmount = displayPrice;
 
   return (
     <div className='min-h-screen bg-background'>
@@ -236,12 +295,16 @@ export function CheckoutContent() {
                 Secure Checkout
               </h1>
               <p className='text-slate-400 text-sm mb-8'>
-                Complete your purchase securely below. Your payment information is encrypted and secure.
+                Complete your purchase securely below. Your payment information
+                is encrypted and secure.
               </p>
 
               {error && (
                 <div className='mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3'>
-                  <AlertCircle size={20} className='text-red-400 flex-shrink-0 mt-0.5' />
+                  <AlertCircle
+                    size={20}
+                    className='text-red-400 flex-shrink-0 mt-0.5'
+                  />
                   <p className='text-sm text-red-300'>{error}</p>
                 </div>
               )}
@@ -325,7 +388,7 @@ export function CheckoutContent() {
                         </label>
                         <div className='relative'>
                           <input
-                            type={showCvv ? 'text' : 'password'}
+                            type={showCvv ? "text" : "password"}
                             name='cvv'
                             placeholder='123'
                             value={cardData.cvv}
@@ -442,12 +505,18 @@ export function CheckoutContent() {
                     className='mt-1 w-4 h-4 rounded border-white/20 text-cyan-electric focus:ring-2 focus:ring-cyan-electric'
                   />
                   <label htmlFor='terms' className='text-xs text-slate-400'>
-                    I agree to the{' '}
-                    <Link href='/terms' className='text-cyan-electric hover:underline'>
+                    I agree to the{" "}
+                    <Link
+                      href='/terms'
+                      className='text-cyan-electric hover:underline'
+                    >
                       Terms and Conditions
-                    </Link>
-                    {' '}and{' '}
-                    <Link href='/privacy' className='text-cyan-electric hover:underline'>
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href='/privacy'
+                      className='text-cyan-electric hover:underline'
+                    >
                       Privacy Policy
                     </Link>
                   </label>
@@ -489,23 +558,39 @@ export function CheckoutContent() {
 
               <div className='space-y-4 mb-6'>
                 <div>
-                  <p className='text-slate-500 text-xs uppercase tracking-widest mb-2'>Plan</p>
+                  <p className='text-slate-500 text-xs uppercase tracking-widest mb-2'>
+                    Plan
+                  </p>
                   <p className='text-xl font-black text-white'>{plan.name}</p>
-                  <p className='text-xs text-slate-400 mt-1'>{plan.description}</p>
+                  <p className='text-xs text-slate-400 mt-1'>
+                    {plan.description}
+                  </p>
                 </div>
 
                 <div className='pt-4 border-t border-white/10'>
-                  <p className='text-slate-500 text-xs uppercase tracking-widest mb-2'>Billing Cycle</p>
-                  <p className='text-sm font-bold text-white capitalize'>{interval}</p>
+                  <p className='text-slate-500 text-xs uppercase tracking-widest mb-2'>
+                    Billing Cycle
+                  </p>
+                  <p className='text-sm font-bold text-white capitalize'>
+                    {interval}
+                  </p>
                 </div>
 
                 {plan.features && plan.features.length > 0 && (
                   <div className='pt-4 border-t border-white/10'>
-                    <p className='text-slate-500 text-xs uppercase tracking-widest mb-3'>Includes</p>
+                    <p className='text-slate-500 text-xs uppercase tracking-widest mb-3'>
+                      Includes
+                    </p>
                     <ul className='space-y-2'>
                       {plan.features.slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className='flex items-start gap-2 text-xs text-slate-300'>
-                          <CheckCircle2 size={14} className='text-lime-bio flex-shrink-0 mt-0.5' />
+                        <li
+                          key={idx}
+                          className='flex items-start gap-2 text-xs text-slate-300'
+                        >
+                          <CheckCircle2
+                            size={14}
+                            className='text-lime-bio flex-shrink-0 mt-0.5'
+                          />
                           {feature}
                         </li>
                       ))}
@@ -517,7 +602,9 @@ export function CheckoutContent() {
               <div className='space-y-3 border-t border-white/10 pt-6'>
                 <div className='flex justify-between items-center'>
                   <span className='text-slate-400 text-sm'>Subtotal</span>
-                  <span className='text-white font-bold'>${displayPrice.toFixed(2)}</span>
+                  <span className='text-white font-bold'>
+                    ${displayPrice.toFixed(2)}
+                  </span>
                 </div>
                 <div className='flex justify-between items-center'>
                   <span className='text-slate-400 text-sm'>Tax</span>
@@ -525,7 +612,9 @@ export function CheckoutContent() {
                 </div>
                 <div className='flex justify-between items-center pt-3 border-t border-white/10 text-lg font-black'>
                   <span className='text-white'>Total</span>
-                  <span className='text-cyan-electric'>${totalAmount.toFixed(2)}</span>
+                  <span className='text-cyan-electric'>
+                    ${totalAmount.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
@@ -534,7 +623,8 @@ export function CheckoutContent() {
                   ✓ Secure Payment
                 </p>
                 <p className='text-xs text-slate-300'>
-                  Your payment is processed securely. Refunds available within 30 days.
+                  Your payment is processed securely. Refunds available within
+                  30 days.
                 </p>
               </div>
             </div>
@@ -544,5 +634,5 @@ export function CheckoutContent() {
 
       <Footer />
     </div>
-  )
+  );
 }

@@ -11,6 +11,7 @@ import { Check, Zap, ArrowRight } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { DEFAULT_PLANS } from "@/lib/plans";
 
 interface Plan {
   id: number;
@@ -31,45 +32,7 @@ interface Testimonial {
   imageUrl: string;
 }
 
-const MOCK_PLANS: Plan[] = [
-  {
-    id: 1,
-    slug: "basic",
-    name: "Basic",
-    description: "ENTRY-LEVEL PRECISION",
-    price: 0,
-    price_yearly: 0,
-    features: ["5 TELEMETRY QUERIES", "BASIC AI CORE", "COMMUNITY ACCESS"],
-  },
-  {
-    id: 2,
-    slug: "pro",
-    name: "Pro",
-    description: "HIGH-PERFORMANCE ANALYTICS",
-    price: 19.99,
-    price_yearly: 199.99,
-    features: [
-      "UNLIMITED TELEMETRY",
-      "HARDWARE ACCELERATION",
-      "PRIORITY COMPUTE",
-      "EXOTIC MODELS",
-    ],
-  },
-  {
-    id: 3,
-    slug: "enterprise",
-    name: "Enterprise",
-    description: "UNRESTRICTED SCALABILITY",
-    price: 49.99,
-    price_yearly: 499.99,
-    features: [
-      "DEDICATED INSTANCE",
-      "QUANTUM SLA",
-      "ADVANCED FORENSICS",
-      "RAW API ACCESS",
-    ],
-  },
-];
+// DEFAULT_PLANS imported from `lib/plans` (used as fallback / seed source)
 
 const TESTIMONIALS: Testimonial[] = [
   {
@@ -122,6 +85,49 @@ export default function PricingPage() {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
 
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedStatus, setSeedStatus] = useState<string | null>(null);
+  const canSeed =
+    process.env.NEXT_PUBLIC_ENABLE_PLAN_SEED === "true" ||
+    process.env.NODE_ENV !== "production";
+
+  const seedPlans = async () => {
+    if (!canSeed || isSeeding) return;
+    setIsSeeding(true);
+    setSeedStatus(null);
+
+    try {
+      for (const p of DEFAULT_PLANS) {
+        const payload = {
+          name: p.name,
+          slug: p.slug,
+          description: p.description,
+          price: p.price,
+          price_yearly: p.price_yearly ?? null,
+          features: p.features ?? [],
+          currency: "USD",
+          interval: "monthly",
+          is_active: true,
+        } as any;
+
+        try {
+          await api.post("/subscription-plans", payload);
+        } catch (innerErr) {
+          // ignore individual failures (may require admin rights on backend)
+          console.warn("Seed plan failed for", p.slug, innerErr);
+        }
+      }
+
+      setSeedStatus("Seed completed — reloading plans");
+      await fetchPlans();
+    } catch (err) {
+      console.error("Failed to seed plans", err);
+      setSeedStatus("Seed failed — check console or authenticate as admin");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
   useEffect(() => {
     fetchPlans();
   }, []);
@@ -133,14 +139,34 @@ export default function PricingPage() {
         if (response.data.length > 0) {
           setPlans(response.data);
         } else {
-          setPlans(MOCK_PLANS);
+          // backend returned empty list — use local defaults and optionally seed backend (dev/test only)
+          setPlans(
+            DEFAULT_PLANS.map((p) => ({
+              ...p,
+              price_yearly: p.price_yearly ?? null,
+            }))
+          );
+          if (canSeed) {
+            // try to push defaults to backend (best-effort; requires admin token)
+            seedPlans();
+          }
         }
       } else {
-        setPlans(MOCK_PLANS);
+        setPlans(
+          DEFAULT_PLANS.map((p) => ({
+            ...p,
+            price_yearly: p.price_yearly ?? null,
+          }))
+        );
       }
     } catch (error) {
       console.error("Failed to fetch plans:", error);
-      setPlans(MOCK_PLANS);
+      setPlans(
+        DEFAULT_PLANS.map((p) => ({
+          ...p,
+          price_yearly: p.price_yearly ?? null,
+        }))
+      );
     } finally {
       setIsLoading(false);
     }
@@ -227,6 +253,24 @@ export default function PricingPage() {
             </span>
           </span>
         </div>
+
+        {/* Dev-only: seed backend with default plans (opt-in via NEXT_PUBLIC_ENABLE_PLAN_SEED=true) */}
+        {canSeed && (
+          <div className='text-center mb-6'>
+            <button
+              onClick={seedPlans}
+              disabled={isSeeding}
+              className='px-4 py-2 text-sm font-bold rounded bg-amber-500/20 hover:bg-amber-500/30'
+            >
+              {isSeeding
+                ? "Seeding plans..."
+                : "Push default plans to backend (dev only)"}
+            </button>
+            {seedStatus && (
+              <p className='text-xs text-slate-400 mt-2'>{seedStatus}</p>
+            )}
+          </div>
+        )}
 
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-16'>
           {isLoading ? (
