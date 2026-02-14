@@ -176,7 +176,7 @@ export default function PricingPage() {
     setTimeout(() => {
       setIsProcessing(false);
       setIsConfirmModalOpen(false);
-      router.push("/dashboard/overview");
+      router.push("/dashboard");
     }, 2000);
   };
 
