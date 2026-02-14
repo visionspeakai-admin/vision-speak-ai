@@ -99,7 +99,7 @@ export default function TechnologyPage() {
         </div>
         <div className='mb-8'>
           <img
-            src='/images/neural_net_abstract_1770976031098.png'
+            src='/images/technology.webp'
             alt='Model architecture illustration'
             className='w-full rounded-2xl shadow-lg'
           />
@@ -229,7 +229,7 @@ export default function TechnologyPage() {
         <div className='glass-effect p-8 md:p-12 rounded-2xl'>
           <div className='mb-6'>
             <img
-              src='/images/gpu_performance_comparison_1770976140955.png'
+              src='/images/technology_second.webp'
               alt='GPU vs CPU performance'
               className='w-full rounded-xl object-cover max-h-48'
             />

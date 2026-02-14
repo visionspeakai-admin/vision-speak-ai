@@ -42,8 +42,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Accessibility Director",
     company: "TechAccessHub Inc.",
     rating: 5,
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+    imageUrl: "/images/pf_1.webp",
   },
   {
     quote:
@@ -52,8 +51,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "CTO",
     company: "RetailVision Solutions",
     rating: 5,
-    imageUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    imageUrl: "/images/pm_1.webp",
   },
   {
     quote:
@@ -62,8 +60,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Head of Innovation",
     company: "CloudScale Analytics",
     rating: 5,
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+    imageUrl: "/images/pf_2.webp",
   },
   {
     quote:
@@ -72,8 +69,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Senior Engineer",
     company: "NeuralWorks",
     rating: 5,
-    imageUrl:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    imageUrl: "/images/pm_2.webp",
   },
 ];
 
@@ -144,7 +140,7 @@ export default function PricingPage() {
             DEFAULT_PLANS.map((p) => ({
               ...p,
               price_yearly: p.price_yearly ?? null,
-            }))
+            })),
           );
           if (canSeed) {
             // try to push defaults to backend (best-effort; requires admin token)
@@ -156,7 +152,7 @@ export default function PricingPage() {
           DEFAULT_PLANS.map((p) => ({
             ...p,
             price_yearly: p.price_yearly ?? null,
-          }))
+          })),
         );
       }
     } catch (error) {
@@ -165,7 +161,7 @@ export default function PricingPage() {
         DEFAULT_PLANS.map((p) => ({
           ...p,
           price_yearly: p.price_yearly ?? null,
-        }))
+        })),
       );
     } finally {
       setIsLoading(false);
@@ -218,13 +214,6 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className='py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
-        <div className='mb-8 rounded-2xl overflow-hidden'>
-          <img
-            src='/images/analytics_dashboard_viz_1770975937128.png'
-            alt='Pricing analytics'
-            className='w-full rounded-2xl shadow-lg'
-          />
-        </div>
         {/* Billing Toggle */}
         <div className='flex justify-center items-center gap-6 mb-20'>
           <span
@@ -373,7 +362,7 @@ export default function PricingPage() {
 
         <div className='mb-8 rounded-2xl overflow-hidden'>
           <img
-            src='/images/gpu_performance_comparison_1770976140955.png'
+            src='/images/pricing.webp'
             alt='Add-ons overview'
             className='w-full rounded-2xl shadow-md'
           />

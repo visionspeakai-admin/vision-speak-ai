@@ -101,7 +101,7 @@ export default function Home() {
           {/* Background Tech Image */}
           <div className='absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700'>
             <img
-              src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2000'
+              src='images/home.webp'
               alt='Cyber Tech'
               className='w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000'
             />
@@ -149,7 +149,7 @@ export default function Home() {
           <ScrollReveal>
             <div className='relative rounded-2xl overflow-hidden glass-effect-strong border border-cyan-electric/20 shadow-[0_0_50px_rgba(0,242,255,0.2)]'>
               <img
-                src='/images/ai_lipread_action_1770975871688.png'
+                src='/images/home_second.webp'
                 alt='AI Lip-Reading Technology in Action'
                 className='w-full h-auto'
               />
@@ -195,7 +195,7 @@ export default function Home() {
         </ScrollReveal>
         <div className='mb-12'>
           <img
-            src='/images/analytics_dashboard_viz_1770975937128.png'
+            src='/images/home_third.webp'
             alt='Performance Analytics Dashboard'
             className='w-full max-w-5xl mx-auto rounded-2xl shadow-2xl'
           />
@@ -307,7 +307,7 @@ export default function Home() {
           <div className='grid grid-cols-1 gap-6'>
             <div className='relative overflow-hidden rounded-2xl'>
               <img
-                src='/images/neural_net_abstract_1770976031098.png'
+                src='/images/home_fourth.webp'
                 alt='Neural network illustration'
                 className='w-full h-40 object-cover rounded-2xl mb-4'
               />
@@ -354,7 +354,7 @@ export default function Home() {
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12'>
           <div className='relative rounded-2xl overflow-hidden glass-effect border border-purple-500/20'>
             <img
-              src='/images/gesture_accessibility_1770975904175.png'
+              src='/images/home_fifth.webp'
               alt='Gesture-based Accessibility Interface'
               className='w-full h-auto'
             />

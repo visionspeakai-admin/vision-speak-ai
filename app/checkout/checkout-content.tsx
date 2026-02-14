@@ -40,7 +40,7 @@ interface CardData {
 export function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, updateUser } = useAuth();
 
   const [plan, setPlan] = useState<Plan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -219,27 +219,52 @@ export function CheckoutContent() {
     setIsProcessing(true);
 
     try {
-      const response = await api.post("/payments/process", {
-        plan_id: plan?.id,
+      // Subscriptions endpoint expects `plan_slug` and a `payment_method` object
+      const payload: any = {
+        plan_slug: plan?.slug,
         interval: interval === "yearly" ? "yearly" : "monthly",
-        card_number: cardData.cardNumber.replace(/\s/g, ""),
-        card_name: cardData.cardName,
-        expiry_month: cardData.expiryMonth.padStart(2, "0"),
-        expiry_year: `20${cardData.expiryYear}`,
-        cvv: cardData.cvv,
-        billing_address: billingAddress,
-      });
+        payment_method: {
+          card_number: cardData.cardNumber.replace(/\s/g, ""),
+          expiry_month: cardData.expiryMonth.padStart(2, "0"),
+          expiry_year: cardData.expiryYear.padStart(2, "0"),
+          cvv: cardData.cvv,
+          card_holder: cardData.cardName,
+        },
+        billing_address: {
+          city: billingAddress.city || undefined,
+          state: billingAddress.state || undefined,
+          postal_code: billingAddress.zipCode || undefined,
+          country: billingAddress.country || undefined,
+          email: billingAddress.email || undefined,
+          full_name: billingAddress.fullName || undefined,
+        },
+      };
+
+      const response = await api.post("/subscriptions", payload);
 
       if (response.status === "success") {
+        // Refresh authenticated user profile so `current_plan` updates immediately in UI
+        try {
+          await updateUser();
+        } catch (uErr) {
+          console.warn("updateUser failed after subscription:", uErr);
+        }
         router.push("/dashboard?payment=success");
       } else {
-        setError(response.message || "Payment processing failed");
+        setError(response.message || "Payment/subscription failed");
       }
     } catch (err: any) {
-      console.error("Payment error:", err);
-      setError(
-        err.message || "An error occurred while processing your payment",
-      );
+      console.error("Subscription/payment error:", err);
+      if (err && err.errors && typeof err.errors === "object") {
+        const messages = Object.values(err.errors)
+          .flat()
+          .map((v: any) => (Array.isArray(v) ? v.join(" ") : String(v)));
+        setError(messages.join(" ") || err.message || "Validation failed");
+      } else {
+        setError(
+          err.message || "An error occurred while processing your payment",
+        );
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -272,8 +297,15 @@ export function CheckoutContent() {
     );
   }
 
-  const displayPrice = plan.price;
-  const totalAmount = displayPrice;
+  // Ensure numeric price to avoid runtime `toFixed` errors when backend returns strings/null
+  const displayPrice = Number(plan.price ?? 0);
+  if (!Number.isFinite(displayPrice)) {
+    console.warn(
+      "checkout: plan.price is not a finite number — coercing to 0",
+      plan,
+    );
+  }
+  const totalAmount = Number.isFinite(displayPrice) ? displayPrice : 0;
 
   return (
     <div className='min-h-screen bg-background'>
@@ -343,7 +375,7 @@ export function CheckoutContent() {
                       <input
                         type='text'
                         name='cardName'
-                        placeholder='John Doe'
+                        placeholder='Enter full name as on card'
                         value={cardData.cardName}
                         onChange={handleCardChange}
                         required

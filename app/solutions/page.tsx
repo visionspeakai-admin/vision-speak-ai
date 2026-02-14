@@ -17,10 +17,10 @@ import {
 
 export default function SolutionsPage() {
   const solutionImages: Record<string, string> = {
-    accessibility: "/images/gesture_accessibility_1770975904175.png",
-    security: "/images/server_datacenter_setup_1770976158685.png",
-    retail: "/images/dev_workspace_code_1770975987598.png",
-    analytics: "/images/analytics_dashboard_viz_1770975937128.png",
+    accessibility: "/images/solutions_1.webp",
+    security: "/images/solutions_2.webp",
+    retail: "/images/solutions_3.webp",
+    analytics: "/images/solutions_4.webp",
   };
 
   const solutions = [

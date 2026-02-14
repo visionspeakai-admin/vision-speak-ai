@@ -188,7 +188,7 @@ stream.setInput(video);`,
 
         <div className='mt-8 rounded-2xl overflow-hidden glass-effect p-0'>
           <img
-            src='/images/dev_workspace_code_1770975987598.png'
+            src='/images/dev.webp'
             alt='Developer workspace'
             className='w-full h-56 object-cover rounded-2xl'
           />
@@ -209,7 +209,7 @@ stream.setInput(video);`,
 
         <div className='mb-8 rounded-2xl overflow-hidden'>
           <img
-            src='/images/neural_net_abstract_1770976031098.png'
+            src='/images/dev_2.webp'
             alt='API architecture'
             className='w-full h-44 object-cover rounded-2xl shadow-md'
           />

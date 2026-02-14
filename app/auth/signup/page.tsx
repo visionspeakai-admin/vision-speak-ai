@@ -207,7 +207,7 @@ export default function SignupPage() {
                   type='text'
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder='John Doe'
+                  placeholder='Enter your full name'
                   required
                   className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                 />

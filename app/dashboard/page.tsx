@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   TrendingUp,
   Zap,
@@ -9,12 +10,12 @@ import {
   Loader2,
   Upload,
   Play,
+  /* Activity kept for accessibility (SVG fallback) */
   Activity,
   Cpu,
-  Server,
-  CloudLightning,
-  Eye,
-  FileCode,
+  /* Server icon replaced by image */
+  /* CloudLightning replaced by image */
+  /* Eye/FileCode replaced by images */
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -27,6 +28,9 @@ type SimulationState = "IDLE" | "UPLOADING" | "PROCESSING" | "COMPLETED";
 export default function DashboardOverview() {
   const { user } = useAuth();
   const { plan, isLoading: isPlanLoading } = useUserPlan();
+  // derived plan slug (fallback to user.current_plan or 'basic') and premium flag
+  const currentPlanSlug = plan?.slug ?? user?.current_plan ?? "basic";
+  const isPremium = currentPlanSlug !== "basic" && currentPlanSlug !== null;
   const [simState, setSimState] = useState<SimulationState>("IDLE");
   const [progress, setProgress] = useState(0);
   const [infraStats, setInfraStats] = useState({
@@ -91,9 +95,14 @@ export default function DashboardOverview() {
           <h1 className='text-3xl font-black text-white uppercase tracking-tighter mb-2'>
             Unit-01 <span className='text-cyan-electric'>Active Terminal</span>
           </h1>
-          <p className='text-slate-500 text-xs font-bold uppercase tracking-[0.3em]'>
-            Welcome back, {user?.first_name || "Operator"}
-          </p>
+          <div className='flex items-center gap-3'>
+            <p className='text-slate-500 text-xs font-bold uppercase tracking-[0.3em]'>
+              Welcome back, {user?.first_name || "Operator"}
+            </p>
+            <span className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-300 uppercase tracking-widest'>
+              {plan?.name ?? user?.current_plan ?? "Free Plan"}
+            </span>
+          </div>
         </div>
         <div className='flex gap-4'>
           <div className='px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3'>
@@ -112,7 +121,13 @@ export default function DashboardOverview() {
           <div className='card-modern !p-0 overflow-hidden relative group min-h-[500px] flex flex-col'>
             <div className='p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]'>
               <div className='flex items-center gap-3'>
-                <Activity size={16} className='text-cyan-electric' />
+                <Image
+                  src='/images/neural_net_abstract_1770976031098.webp'
+                  alt='Neural core'
+                  width={20}
+                  height={20}
+                  className='rounded-sm object-contain'
+                />
                 <h2 className='text-[10px] font-black text-white uppercase tracking-[0.3em]'>
                   Vision Core Simulation
                 </h2>
@@ -152,6 +167,18 @@ export default function DashboardOverview() {
                   >
                     <Play size={16} /> Init Sequence
                   </button>
+                  {!isPremium && (
+                    <p className='text-xs text-slate-400 mt-2'>
+                      Advanced simulation features require <strong>Pro</strong>{" "}
+                      or higher.{" "}
+                      <Link
+                        href='/pricing'
+                        className='text-cyan-electric underline'
+                      >
+                        Upgrade
+                      </Link>
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -316,8 +343,7 @@ export default function DashboardOverview() {
           {/* Widget C: Infrastructure Health */}
           <div className='card-modern'>
             <h3 className='text-[10px] font-black text-white uppercase tracking-[0.3em] mb-6 border-b border-white/5 pb-4 flex items-center gap-2'>
-              <Server size={14} className='text-lime-bio' /> Infrastructure
-              Health
+              <Image src='/images/server_datacenter_setup_1770976158685.webp' alt='Datacenter' width={16} height={16} className='rounded-sm object-contain' /> Infrastructure
             </h3>
 
             <div className='space-y-6'>
@@ -374,7 +400,7 @@ export default function DashboardOverview() {
           {/* Quick Stats Summary */}
           <div className='grid grid-cols-2 gap-4'>
             <div className='p-4 rounded-xl bg-white/[0.02] border border-white/5'>
-              <Eye size={16} className='text-purple-500 mb-2' />
+              <Image src='/images/ai_lipread_action_1770975871688.webp' alt='Scenes' width={16} height={16} className='mb-2 object-contain' />
               <p className='text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1'>
                 Total Scenes
               </p>
@@ -383,12 +409,15 @@ export default function DashboardOverview() {
               </p>
             </div>
             <div className='p-4 rounded-xl bg-white/[0.02] border border-white/5'>
-              <FileCode size={16} className='text-amber-500 mb-2' />
+              <Image src='/images/dev_workspace_code_1770975987598.webp' alt='API' width={16} height={16} className='mb-2 object-contain' />
               <p className='text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1'>
                 API Calls
               </p>
               <p className='text-lg font-bold text-white tracking-tighter'>
                 42.8k
+              </p>
+              <p className='text-xs text-slate-400 mt-1'>
+                {plan?.name ?? user?.current_plan ?? "Free Plan"}
               </p>
             </div>
           </div>
@@ -396,20 +425,40 @@ export default function DashboardOverview() {
           {/* Upgrade Alert (Mock Billing Link) */}
           <div className='p-6 rounded-2xl bg-gradient-to-br from-cyan-electric/20 to-purple-600/10 border border-cyan-electric/30 relative overflow-hidden group'>
             <div className='absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform'>
-              <CloudLightning size={48} className='text-white' />
-            </div>
-            <h4 className='text-sm font-black text-white uppercase tracking-tight mb-2'>
-              Upgrade to Pro
-            </h4>
-            <p className='text-[10px] text-slate-400 leading-relaxed mb-4'>
-              Unlimited neural streams and priority GPU queuing.
-            </p>
-            <Link
-              href='/pricing'
-              className='block w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-center text-[10px] font-black uppercase tracking-widest text-white transition-all border border-white/10'
-            >
-              Review Billing
-            </Link>
+              <Image src='/images/gpu_performance_comparison_1770976140955.webp' alt='GPU comparison' width={48} height={48} className='object-contain' />
+            </div> 
+            {!plan || plan.slug === "basic" ? (
+              <>
+                <h4 className='text-sm font-black text-white uppercase tracking-tight mb-2'>
+                  Upgrade to Pro
+                </h4>
+                <p className='text-[10px] text-slate-400 leading-relaxed mb-4'>
+                  Unlimited neural streams and priority GPU queuing.
+                </p>
+                <Link
+                  href='/pricing'
+                  className='block w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-center text-[10px] font-black uppercase tracking-widest text-white transition-all border border-white/10'
+                >
+                  Review Billing
+                </Link>
+              </>
+            ) : (
+              <>
+                <h4 className='text-sm font-black text-white uppercase tracking-tight mb-2'>
+                  You&apos;re on {plan.name}
+                </h4>
+                <p className='text-[10px] text-slate-400 leading-relaxed mb-4'>
+                  Thank you for supporting VisionSpeakAI. Manage billing or
+                  explore enterprise options.
+                </p>
+                <Link
+                  href='/dashboard/settings'
+                  className='block w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 text-center text-[10px] font-black uppercase tracking-widest text-white transition-all border border-white/10'
+                >
+                  Manage Billing
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
