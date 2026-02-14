@@ -1,4 +1,4 @@
-import { Check, Crown, Zap, Upgrade } from "lucide-react";
+import { Check, Crown, Zap, Settings } from "lucide-react";
 import Link from "next/link";
 import { UserPlan } from "@/hooks/use-user-plan";
 
@@ -99,7 +99,7 @@ export function CurrentPlanCard({ plan, isLoading }: CurrentPlanCardProps) {
             href='/dashboard/settings'
             className='flex-1 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-black text-white uppercase tracking-widest text-center transition-all flex items-center justify-center gap-1'
           >
-            <Upgrade size={14} />
+            <Settings size={14} />
             Manage
           </Link>
         )}
