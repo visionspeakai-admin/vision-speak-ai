@@ -343,7 +343,14 @@ export default function DashboardOverview() {
           {/* Widget C: Infrastructure Health */}
           <div className='card-modern'>
             <h3 className='text-[10px] font-black text-white uppercase tracking-[0.3em] mb-6 border-b border-white/5 pb-4 flex items-center gap-2'>
-              <Image src='/images/server_datacenter_setup_1770976158685.webp' alt='Datacenter' width={16} height={16} className='rounded-sm object-contain' /> Infrastructure
+              <Image
+                src='/images/server_datacenter_setup_1770976158685.webp'
+                alt='Datacenter'
+                width={16}
+                height={16}
+                className='rounded-sm object-contain'
+              />{" "}
+              Infrastructure
             </h3>
 
             <div className='space-y-6'>
@@ -400,7 +407,13 @@ export default function DashboardOverview() {
           {/* Quick Stats Summary */}
           <div className='grid grid-cols-2 gap-4'>
             <div className='p-4 rounded-xl bg-white/[0.02] border border-white/5'>
-              <Image src='/images/ai_lipread_action_1770975871688.webp' alt='Scenes' width={16} height={16} className='mb-2 object-contain' />
+              <Image
+                src='/images/ai_lipread_action_1770975871688.webp'
+                alt='Scenes'
+                width={16}
+                height={16}
+                className='mb-2 object-contain'
+              />
               <p className='text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1'>
                 Total Scenes
               </p>
@@ -409,7 +422,13 @@ export default function DashboardOverview() {
               </p>
             </div>
             <div className='p-4 rounded-xl bg-white/[0.02] border border-white/5'>
-              <Image src='/images/dev_workspace_code_1770975987598.webp' alt='API' width={16} height={16} className='mb-2 object-contain' />
+              <Image
+                src='/images/dev_workspace_code_1770975987598.webp'
+                alt='API'
+                width={16}
+                height={16}
+                className='mb-2 object-contain'
+              />
               <p className='text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1'>
                 API Calls
               </p>
@@ -425,8 +444,14 @@ export default function DashboardOverview() {
           {/* Upgrade Alert (Mock Billing Link) */}
           <div className='p-6 rounded-2xl bg-gradient-to-br from-cyan-electric/20 to-purple-600/10 border border-cyan-electric/30 relative overflow-hidden group'>
             <div className='absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform'>
-              <Image src='/images/gpu_performance_comparison_1770976140955.webp' alt='GPU comparison' width={48} height={48} className='object-contain' />
-            </div> 
+              <Image
+                src='/images/gpu_performance_comparison_1770976140955.webp'
+                alt='GPU comparison'
+                width={48}
+                height={48}
+                className='object-contain'
+              />
+            </div>
             {!plan || plan.slug === "basic" ? (
               <>
                 <h4 className='text-sm font-black text-white uppercase tracking-tight mb-2'>
@@ -448,8 +473,8 @@ export default function DashboardOverview() {
                   You&apos;re on {plan.name}
                 </h4>
                 <p className='text-[10px] text-slate-400 leading-relaxed mb-4'>
-                  Thank you for supporting VisionSpeakAI. Manage billing or
-                  explore enterprise options.
+                  Thank you for supporting VSpeakX. Manage billing or explore
+                  enterprise options.
                 </p>
                 <Link
                   href='/dashboard/settings'

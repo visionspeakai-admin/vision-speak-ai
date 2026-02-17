@@ -37,7 +37,7 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "VisionSpeakAI transformed how we handle accessibility. Our team can now reach 40% more users without additional resources. The accuracy is incredible.",
+      "VSpeakX 1.0 transformed how we handle accessibility. Our team can now reach 40% more users without additional resources. The accuracy is incredible.",
     author: "Sarah Mitchell",
     role: "Accessibility Director",
     company: "TechAccessHub Inc.",
@@ -46,7 +46,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote:
-      "The real-time processing speed is unmatched. We integrated VisionSpeakAI into our retail operations and saw a 35% improvement in customer engagement metrics.",
+      "The real-time processing speed is unmatched. We integrated VSpeakX 1.0 into our retail operations and saw a 35% improvement in customer engagement metrics.",
     author: "Marcus Chen",
     role: "CTO",
     company: "RetailVision Solutions",
@@ -207,8 +207,8 @@ export default function PricingPage() {
       {/* Hero */}
       <HeroSection
         badgeText='Simple, Transparent Pricing'
-        title='Choose Your Plan'
-        description="Flexible pricing for projects of any scale. Always know what you'll pay."
+        title='Performance Plans for Every Vision'
+        description='Scalable pricing for real-time lip-reading and gesture recognition, designed for applications of every size.'
         backgroundVariant='grid'
       />
 
@@ -401,7 +401,7 @@ export default function PricingPage() {
           <h2 className='heading-lg mb-4 text-pretty'>What Our Users Say</h2>
           <p className='text-muted-foreground text-lg max-w-2xl mx-auto'>
             Join thousands of businesses transforming their operations with
-            VisionSpeakAI
+            VSpeakX 1.0
           </p>
         </ScrollReveal>
 
@@ -508,7 +508,7 @@ export default function PricingPage() {
         <FadeInUp>
           <div className='max-w-2xl mx-auto text-center card-modern p-12'>
             <h2 className='heading-lg mb-4 text-pretty'>
-              Ready to Get Started?
+              Ready To Activate Gesture & Lip Recognition?
             </h2>
             <p className='body-text mb-8'>
               Choose your plan and start building in minutes. Our team is here

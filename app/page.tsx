@@ -18,31 +18,60 @@ import {
   TrendingUp,
   Lock,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   const features = [
     {
-      icon: <Eye className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/f1.webp"}
+          width={52}
+          height={52}
+          alt='lip-reading'
+        />
+      ),
       title: "Lip-reading",
       description:
         "Advanced vision transformers capture and interpret lip movements with 95% accuracy across multiple languages.",
       badge: "Primary Feature",
     },
     {
-      icon: <Hand className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/f2.webp"}
+          width={52}
+          height={52}
+          alt='gesture-recognition'
+        />
+      ),
       title: "Gesture Recognition",
       description:
         "Real-time hand and body gesture detection for intuitive, touchless interaction and control systems.",
     },
     {
-      icon: <Zap className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/f3.webp"}
+          width={52}
+          height={52}
+          alt='gpu-acceleration'
+        />
+      ),
       title: "GPU Acceleration",
       description:
         "High-performance GPU processing enables sub-100ms latency for real-time recognition and analysis.",
       isHighlighted: true,
     },
     {
-      icon: <Shield className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/f4.webp"}
+          width={52}
+          height={52}
+          alt='Enterprise Security'
+        />
+      ),
       title: "Enterprise Security",
       description:
         "End-to-end encryption, SOC 2 compliance, and edge processing for sensitive data protection.",
@@ -51,25 +80,53 @@ export default function Home() {
 
   const useCases = [
     {
-      icon: <Users className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/h1.webp"}
+          width={52}
+          height={52}
+          alt='Accessibility'
+        />
+      ),
       title: "Accessibility",
       description:
         "Enable speech-impaired users to communicate seamlessly with real-time captioning and text conversion.",
     },
     {
-      icon: <Lock className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/h2.webp"}
+          width={52}
+          height={52}
+          alt='Silent Authentication'
+        />
+      ),
       title: "Silent Authentication",
       description:
         "Gesture-based biometric authentication for secure, privacy-focused user verification.",
     },
     {
-      icon: <Cpu className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/h3.webp"}
+          width={52}
+          height={52}
+          alt='Retail Innovation'
+        />
+      ),
       title: "Retail Innovation",
       description:
         "Touchless kiosk interactions and gesture-driven menus for enhanced customer experiences.",
     },
     {
-      icon: <TrendingUp className='w-6 h-6' />,
+      icon: (
+        <Image
+          src={"/images/h4.webp"}
+          width={52}
+          height={52}
+          alt='Research & Analytics'
+        />
+      ),
       title: "Research & Analytics",
       description:
         "Analyze communication patterns, engagement metrics, and behavioral data at scale.",
@@ -77,10 +134,30 @@ export default function Home() {
   ];
 
   const metrics = [
-    { value: "95", unit: "%", label: "Accuracy Rate", icon: <Eye size={20} /> },
-    { value: "<100", unit: "ms", label: "Latency", icon: <Zap size={20} /> },
-    { value: "40", unit: "+", label: "Languages", icon: <Users size={20} /> },
-    { value: "99.9", unit: "%", label: "Uptime", icon: <Shield size={20} /> },
+    {
+      value: "95",
+      unit: "%",
+      label: "Accuracy Rate",
+      icon: <img src={"/images/i1.webp"} width={40} height={40} />,
+    },
+    {
+      value: "<100",
+      unit: "ms",
+      label: "Latency",
+      icon: <img src={"/images/i2.webp"} width={40} height={40} />,
+    },
+    {
+      value: "40",
+      unit: "+",
+      label: "Languages",
+      icon: <img src={"/images/i3.webp"} width={40} height={40} />,
+    },
+    {
+      value: "99.9",
+      unit: "%",
+      label: "Uptime",
+      icon: <img src={"/images/i4.webp"} width={40} height={40} />,
+    },
   ];
 
   return (
@@ -237,7 +314,7 @@ export default function Home() {
               GPU-ACCELERATED INFERENCE
             </h2>
             <p className='body-text mb-8 text-white/80'>
-              High-performance GPU acceleration enables VisionSpeakAI to deliver
+              High-performance GPU acceleration enables VSpeakX 1.0 to deliver
               unprecedented speed and efficiency. Our models achieve{" "}
               <span className='text-cyan-electric font-bold'>
                 sub-100ms latency
@@ -248,7 +325,12 @@ export default function Home() {
             <div className='space-y-6 mb-10'>
               <div className='flex gap-6 items-center'>
                 <div className='flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg'>
-                  <Cpu className='w-7 h-7 text-cyan-electric' />
+                  <Image
+                    src={"/images/g1.webp"}
+                    width={52}
+                    height={52}
+                    alt='Parallel Processing'
+                  />
                 </div>
                 <div>
                   <h3 className='font-bold text-white text-lg'>
@@ -263,7 +345,12 @@ export default function Home() {
 
               <div className='flex gap-6 items-center'>
                 <div className='flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg'>
-                  <Zap className='w-7 h-7 text-cyan-electric' />
+                  <Image
+                    src={"/images/g2.webp"}
+                    width={52}
+                    height={52}
+                    alt='Real-Time Processing'
+                  />
                 </div>
                 <div>
                   <h3 className='font-bold text-white text-lg'>
@@ -278,7 +365,12 @@ export default function Home() {
 
               <div className='flex gap-6 items-center'>
                 <div className='flex-shrink-0 w-14 h-14 rounded-2xl glass-effect flex items-center justify-center border-cyan-electric/20 shadow-lg'>
-                  <TrendingUp className='w-7 h-7 text-cyan-electric' />
+                  <Image
+                    src={"/images/g3.webp"}
+                    width={52}
+                    height={52}
+                    alt='Scalable Architecture'
+                  />
                 </div>
                 <div>
                   <h3 className='font-bold text-white text-lg'>
@@ -341,8 +433,8 @@ export default function Home() {
             Real-World Applications
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
-            From accessibility solutions to enterprise security, VisionSpeakAI
-            powers transformative applications.
+            From accessibility solutions to enterprise security, VSpeakX powers
+            transformative applications.
           </p>
         </ScrollReveal>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12'>

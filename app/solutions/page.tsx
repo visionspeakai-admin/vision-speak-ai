@@ -104,8 +104,8 @@ export default function SolutionsPage() {
       {/* Hero */}
       <HeroSection
         badgeText='Industry Solutions'
-        title='Transform Your Industry with AI-Powered Interaction'
-        description='From accessibility to security, VisionSpeakAI provides tailored solutions for diverse enterprise needs.'
+        title='Real-Time Lip and Gesture Solutions'
+        description='VSpeakX 1.0 enables real-time lip-reading and gesture recognition, enhancing accessibility, security, and operational efficiency.'
         backgroundVariant='gradient'
       />
 
@@ -220,7 +220,7 @@ export default function SolutionsPage() {
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
             Organizations worldwide are transforming customer experiences and
-            operations with VisionSpeakAI.
+            operations with VSpeakX 1.0.
           </p>
         </div>
 
@@ -275,10 +275,10 @@ export default function SolutionsPage() {
       <section className='py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
         <div className='text-center mb-12'>
           <h2 className='heading-lg mb-4 text-pretty'>
-            VisionSpeakAI vs Traditional Solutions
+            VSpeakX 1.0s Traditional Solutions
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
-            Why enterprises choose VisionSpeakAI for modern AI-powered
+            Why enterprises choose VSpeakX 1.0 for modern AI-powered
             interaction.
           </p>
         </div>
@@ -291,7 +291,7 @@ export default function SolutionsPage() {
                   Feature
                 </th>
                 <th className='px-4 py-4 text-center font-semibold text-cyan-400'>
-                  VisionSpeakAI
+                  VSpeakX 1.0
                 </th>
                 <th className='px-4 py-4 text-center font-semibold text-slate-400'>
                   Traditional

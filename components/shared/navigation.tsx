@@ -20,11 +20,28 @@ export function Navigation() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
-  // Scroll animations
+  // Scroll animations (desktop)
   const navHeight = useTransform(scrollY, [0, 50], ["6rem", "5rem"]);
   const navBgOpacity = useTransform(scrollY, [0, 50], [0.5, 0.85]);
   const navBorderOpacity = useTransform(scrollY, [0, 50], [0.05, 0.1]);
   const navBackdropBlur = useTransform(scrollY, [0, 50], ["12px", "20px"]);
+
+  // Detect mobile viewport so we can use a solid background + simpler styling on small screens
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(max-width: 767px)");
+    const update = () =>
+      setIsMobile(Boolean(mq ? mq.matches : window.innerWidth < 768));
+    update();
+    mq?.addEventListener?.("change", update);
+    window.addEventListener("resize", update);
+    return () => {
+      mq?.removeEventListener?.("change", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   const navLinks = [
     { label: "Technology", href: "/technology" },
@@ -48,15 +65,20 @@ export function Navigation() {
   return (
     <motion.nav
       style={{
-        height: navHeight,
-        backgroundColor: `rgba(5, 5, 5, ${navBgOpacity.get()})`,
-        backdropFilter: `blur(${navBackdropBlur.get()})`,
+        height: isMobile ? "4.5rem" : navHeight,
+        backgroundColor:
+          typeof window === "undefined" || window.innerWidth < 768
+            ? "rgba(5, 5, 5, 0.98)"
+            : `rgba(5, 5, 5, ${navBgOpacity.get()})`,
+        backdropFilter: isMobile ? "none" : `blur(${navBackdropBlur.get()})`,
         borderBottom: `1px solid rgba(255, 255, 255, ${navBorderOpacity.get()})`,
       }}
-      className='fixed top-0 left-0 right-0 z-50 transition-colors duration-300'
+      animate={isMobile || isOpen ? { scale: 1.002 } : { scale: 1 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className='fixed top-0 left-0 right-0 w-full z-50 transition-colors duration-300'
     >
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full'>
-        <div className='flex items-center justify-between h-full'>
+      <div className='w-full h-full flex items-center px-4 sm:px-6 lg:px-8'>
+        <div className='max-w-7xl mx-auto w-full flex items-center justify-between h-full'>
           {/* Logo */}
           <Logo />
 
@@ -154,22 +176,62 @@ export function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-2xl md:hidden'
+            transition={{ duration: 0.2 }}
+            className='fixed inset-0 z-40 backdrop-blur-sm md:hidden'
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.95)" }}
+            onClick={() => setIsOpen(false)}
           >
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className='absolute right-0 top-0 bottom-0 w-[80%] max-w-sm bg-obsidian border-l border-white/5 p-8 flex flex-col shadow-2xl'
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className='absolute right-0 top-0 bottom-0 w-screen h-screen max-w-sm border-l border-white/6 p-6 flex flex-col shadow-2xl'
+              style={{ backgroundColor: "rgba(0, 0, 0, 1)" }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className='flex flex-col gap-6 mt-12'>
+              <div className='flex flex-col gap-6 mt-8'>
+                {/* Prominent CTA at the top of the mobile panel */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  className='w-full space-y-3'
+                >
+                  {user ? (
+                    <Link
+                      href='/dashboard'
+                      className='w-full py-4 text-center block text-sm font-bold rounded-xl glow-button'
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        href='/auth/signup'
+                        className='w-full py-4 text-center block text-sm font-bold rounded-xl glow-button'
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Get Started Free
+                      </Link>
+                      <Link
+                        href='/auth/login'
+                        className='w-full py-3 text-center block text-sm font-bold rounded-xl border border-white/10 hover:bg-white/5 transition-colors'
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Login to Portal
+                      </Link>
+                    </>
+                  )}
+                </motion.div>
+
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
+                    transition={{ delay: 0.15 + i * 0.06, duration: 0.3 }}
                   >
                     <Link
                       href={link.href}
@@ -185,49 +247,6 @@ export function Navigation() {
                     </Link>
                   </motion.div>
                 ))}
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className='mt-8 pt-8 border-t border-white/5 space-y-4'
-                >
-                  {user ? (
-                    <>
-                      <Link
-                        href='/dashboard'
-                        className='w-full py-4 text-center block text-sm font-bold rounded-xl glow-button'
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href='/auth/logout'
-                        className='w-full py-4 text-center block text-sm font-bold rounded-xl border border-white/10 hover:bg-white/5 transition-colors opacity-0 pointer-events-none'
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Login to Portal
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href='/auth/signup'
-                        className='w-full py-4 text-center block text-sm font-bold rounded-xl glow-button'
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Get Started Free
-                      </Link>
-                      <Link
-                        href='/auth/login'
-                        className='w-full py-4 text-center block text-sm font-bold rounded-xl border border-white/10 hover:bg-white/5 transition-colors'
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Login to Portal
-                      </Link>
-                    </>
-                  )}
-                </motion.div>
               </div>
 
               {/* Decorative element */}

@@ -12,6 +12,7 @@ interface LogoProps {
   showText?: boolean;
   href?: string;
   src?: string; // Allow passing an image source
+  text?: string;
 }
 
 export function Logo({
@@ -20,17 +21,18 @@ export function Logo({
   textClassName,
   showText = false,
   href = "/",
-  src = "images/logo.webp",
+  src = "/images/logo.webp",
+  text = "VSpeakX",
 }: LogoProps) {
   return (
     <Link
       href={href}
-      className={cn("flex items-center group", className)}
+      className={cn("flex items-center space-x-3 group", className)}
     >
       <motion.div
         className={cn(
-          // size by height and let width follow the logo aspect ratio; allow hover glow to overflow
-          "relative inline-flex h-10 md:h-12 lg:h-16 items-center justify-center overflow-visible transition-all",
+          // size by height and let width follow the logo aspect ratio; left-align on large widths
+          "relative inline-flex h-10 md:h-12 lg:h-16 items-center justify-center lg:justify-start pl-0 lg:pl-2 overflow-visible transition-all",
           imageClassName,
         )}
         // prefer a 3:1 aspect by default (matches previous w-60 h-20); container height controls rendered size
@@ -58,11 +60,11 @@ export function Logo({
       {showText && (
         <span
           className={cn(
-            "text-white group-hover:text-cyan-electric transition-colors tracking-tighter uppercase font-black",
+            "text-white group-hover:text-cyan-electric transition-colors tracking-tighter font-black",
             textClassName,
           )}
         >
-          VisionSpeak
+          {text}
         </span>
       )}
     </Link>

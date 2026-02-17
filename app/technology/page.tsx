@@ -5,11 +5,19 @@ import { Footer } from "@/components/shared/footer";
 import { HeroSection } from "@/components/shared/hero-section";
 import { FeatureCard } from "@/components/shared/feature-card";
 import { BarChart3, Cpu, Zap, Shield, Network, Brain } from "lucide-react";
+import Image from "next/image";
 
 export default function TechnologyPage() {
   const techDetails = [
     {
-      icon: <Brain className='w-6 h-6' />,
+      icon: (
+        <Image
+          src='/images/t1.webp'
+          alt='Transformer icon'
+          width={52}
+          height={52}
+        />
+      ),
       title: "Vision Transformers",
       description:
         "State-of-the-art transformer models trained on 10M+ video samples with multi-language lip-reading capabilities.",
@@ -17,32 +25,67 @@ export default function TechnologyPage() {
       isHighlighted: true,
     },
     {
-      icon: <Cpu className='w-6 h-6' />,
-      title: "NVIDIA CUDA/cuDNN",
+      icon: (
+        <Image
+          src='/images/t2.webp'
+          alt='GPU Acceleration icon'
+          width={52}
+          height={52}
+        />
+      ),
+      title: "GPU ACCELERATION",
       description:
         "Full NVIDIA acceleration stack enabling 45% faster inference on RTX and A100 GPUs with optimized memory management.",
     },
     {
-      icon: <Zap className='w-6 h-6' />,
+      icon: (
+        <Image
+          src='/images/t3.webp'
+          alt='Real-time Processing icon'
+          width={52}
+          height={52}
+        />
+      ),
       title: "Real-time Processing",
       description:
         "Sub-100ms latency processing for live video streams with adaptive quality based on hardware capabilities.",
       badge: "NVIDIA-Powered",
     },
     {
-      icon: <Shield className='w-6 h-6' />,
+      icon: (
+        <Image
+          src='/images/t4.webp'
+          alt='Edge & Cloud icon'
+          width={52}
+          height={52}
+        />
+      ),
       title: "Edge & Cloud Ready",
       description:
         "Deploy on-premises or cloud with end-to-end encryption, local processing options, and zero data retention.",
     },
     {
-      icon: <Network className='w-6 h-6' />,
+      icon: (
+        <Image
+          src='/images/t5.webp'
+          alt='Multi-modal icon'
+          width={52}
+          height={52}
+        />
+      ),
       title: "Multi-Modal Learning",
       description:
         "Combines visual lip-reading with audio data for improved accuracy and robustness across environments.",
     },
     {
-      icon: <BarChart3 className='w-6 h-6' />,
+      icon: (
+        <Image
+          src='/images/t6.webp'
+          alt='Adaptive Inference icon'
+          width={52}
+          height={52}
+        />
+      ),
       title: "Adaptive Inference",
       description:
         "Model quantization and pruning for edge devices with 99.2% accuracy retention on mobile hardware.",
@@ -94,8 +137,8 @@ export default function TechnologyPage() {
         <div className='text-center mb-12'>
           <h2 className='heading-lg mb-4 text-pretty'>Technology Foundation</h2>
           <p className='body-text max-w-2xl mx-auto'>
-            Built with cutting-edge machine learning frameworks and NVIDIA GPU
-            acceleration.
+            Developed on robust ML frameworks with GPU acceleration for scalable
+            lip-reading and gesture analysis.
           </p>
         </div>
         <div className='mb-8'>
@@ -124,14 +167,14 @@ export default function TechnologyPage() {
             </span>
           </div>
           <h2 className='heading-lg mb-6 text-pretty'>
-            NVIDIA GPU Acceleration
+            GPU-Accelerated Performance
           </h2>
           <p className='body-text max-w-3xl mb-10'>
-            VisionSpeakAI's performance foundation is built on NVIDIA's CUDA and
-            cuDNN technology stack. By leveraging GPU compute capabilities, we
-            achieve unprecedented speed and efficiency in real-time AI
-            inference. Our models are optimized for NVIDIA's full range of GPUs,
-            from consumer RTX cards to enterprise A100 accelerators.
+            VSpeakX 1.0 is built on high-performance GPU compute. By leveraging
+            GPU acceleration, it achieves unprecedented speed and efficiency in
+            real-time lip-reading and gesture recognition. Models are optimized
+            for a wide range of GPU hardware, from consumer-grade cards to
+            enterprise accelerators and edge devices.
           </p>
 
           {/* Benchmark Cards */}
@@ -157,23 +200,28 @@ export default function TechnologyPage() {
             {/* CUDA */}
             <div className='glass-effect p-8 rounded-xl'>
               <div className='w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-4'>
-                <Cpu className='w-6 h-6 text-cyan-400' />
+                <Image
+                  src={"/images/t7.webp"}
+                  width={52}
+                  height={52}
+                  alt='GPU Compute Optimization'
+                />
               </div>
               <h3 className='text-lg font-bold text-white mb-3'>
-                CUDA Compute
+                GPU Compute Optimization
               </h3>
               <ul className='space-y-2 text-sm text-slate-400'>
                 <li className='flex gap-2'>
-                  <span className='text-cyan-400'>•</span> 10000+ CUDA cores
+                  <span className='text-cyan-400'>•</span> 10000+ GPU cores
                   utilization
                 </li>
                 <li className='flex gap-2'>
                   <span className='text-cyan-400'>•</span> Mixed precision
-                  FP16/INT8
+                  FP16/INT8 for faster inference
                 </li>
                 <li className='flex gap-2'>
-                  <span className='text-cyan-400'>•</span> Memory bandwidth
-                  optimized
+                  <span className='text-cyan-400'>•</span> MMemory bandwidth
+                  optimized for large datasets
                 </li>
               </ul>
             </div>
@@ -181,22 +229,28 @@ export default function TechnologyPage() {
             {/* cuDNN */}
             <div className='glass-effect p-8 rounded-xl'>
               <div className='w-12 h-12 rounded-lg bg-lime-500/20 flex items-center justify-center mb-4'>
-                <Zap className='w-6 h-6 text-lime-400' />
+                <Image
+                  src={"/images/t8.webp"}
+                  width={52}
+                  height={52}
+                  alt='Neural Network Acceleration'
+                />
               </div>
               <h3 className='text-lg font-bold text-white mb-3'>
-                cuDNN Library
+                Neural Network Acceleration
               </h3>
               <ul className='space-y-2 text-sm text-slate-400'>
                 <li className='flex gap-2'>
-                  <span className='text-lime-400'>•</span> Optimized neural ops
+                  <span className='text-lime-400'>•</span> Optimized neural
+                  operations
                 </li>
                 <li className='flex gap-2'>
-                  <span className='text-lime-400'>•</span> Tensor Cores
+                  <span className='text-lime-400'>•</span> Tensor-core-style
                   acceleration
                 </li>
                 <li className='flex gap-2'>
-                  <span className='text-lime-400'>•</span> Auto-tuning
-                  capabilities
+                  <span className='text-lime-400'>•</span> Auto-tuning for
+                  maximum efficiency
                 </li>
               </ul>
             </div>
@@ -204,22 +258,28 @@ export default function TechnologyPage() {
             {/* Hardware */}
             <div className='glass-effect p-8 rounded-xl'>
               <div className='w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4'>
-                <Shield className='w-6 h-6 text-purple-400' />
+                <Image
+                  src={"/images/t9.webp"}
+                  width={52}
+                  height={52}
+                  alt='Supported GPU Hardware'
+                />
               </div>
               <h3 className='text-lg font-bold text-white mb-3'>
-                GPU Hardware
+                Supported GPU Hardware
               </h3>
               <ul className='space-y-2 text-sm text-slate-400'>
                 <li className='flex gap-2'>
-                  <span className='text-purple-400'>•</span> RTX 3090/4090
-                  supported
+                  <span className='text-purple-400'>•</span>Consumer cards (RTX
+                  4090/5090)
                 </li>
                 <li className='flex gap-2'>
-                  <span className='text-purple-400'>•</span> A100 enterprise
-                  grade
+                  <span className='text-purple-400'>•</span> Enterprise
+                  accelerators (A100 or equivalent)
                 </li>
                 <li className='flex gap-2'>
-                  <span className='text-purple-400'>•</span> Jetson edge devices
+                  <span className='text-purple-400'>•</span> Jetson and other
+                  edge devices
                 </li>
               </ul>
             </div>
@@ -341,91 +401,6 @@ Classification Head
 ├── Dropout (0.1) regularization
 └── Softmax Output (95% accuracy)`}
             </code>
-          </div>
-        </div>
-      </section>
-
-      {/* System Requirements */}
-      <section className='py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
-        <div className='text-center mb-12'>
-          <h2 className='heading-lg mb-4 text-pretty'>System Requirements</h2>
-          <p className='body-text max-w-2xl mx-auto'>
-            VisionSpeakAI supports a range of deployment scenarios from edge
-            computing to cloud-scale inference.
-          </p>
-        </div>
-
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-          {/* Minimum */}
-          <div className='glass-effect p-8 rounded-xl'>
-            <h3 className='text-lg font-bold text-white mb-6'>Minimum</h3>
-            <ul className='space-y-3 text-sm text-slate-400'>
-              <li className='flex gap-3'>
-                <span className='text-cyan-400'>→</span>
-                <span>GPU: RTX 2080 or equiv</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-cyan-400'>→</span>
-                <span>VRAM: 6GB</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-cyan-400'>→</span>
-                <span>Latency: ~200ms</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-cyan-400'>→</span>
-                <span>Throughput: 30 FPS</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Recommended */}
-          <div className='glass-effect-strong border-cyan-400/50 shadow-[0_0_30px_rgba(0,242,255,0.3)] p-8 rounded-xl'>
-            <div className='inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold text-cyan-300 bg-cyan-500/10 border border-cyan-500/30'>
-              Recommended
-            </div>
-            <h3 className='text-lg font-bold text-white mb-6'>Production</h3>
-            <ul className='space-y-3 text-sm text-slate-400'>
-              <li className='flex gap-3'>
-                <span className='text-lime-400'>→</span>
-                <span>GPU: RTX 3090 / A100</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-lime-400'>→</span>
-                <span>VRAM: 24GB</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-lime-400'>→</span>
-                <span>Latency: 78ms avg</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-lime-400'>→</span>
-                <span>Throughput: 240 FPS</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Enterprise */}
-          <div className='glass-effect p-8 rounded-xl'>
-            <h3 className='text-lg font-bold text-white mb-6'>Enterprise</h3>
-            <ul className='space-y-3 text-sm text-slate-400'>
-              <li className='flex gap-3'>
-                <span className='text-purple-400'>→</span>
-                <span>GPU: A100 Multi-GPU</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-purple-400'>→</span>
-                <span>VRAM: 80GB+ total</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-purple-400'>→</span>
-                <span>Latency: &lt;50ms</span>
-              </li>
-              <li className='flex gap-3'>
-                <span className='text-purple-400'>→</span>
-                <span>Throughput: 1000+ FPS</span>
-              </li>
-            </ul>
           </div>
         </div>
       </section>

@@ -84,7 +84,11 @@ export default function DashboardLayout({
       >
         {/* Logo */}
         <div className='h-20 flex items-center justify-between px-4 border-b border-white/10'>
-          <Logo showText={sidebarOpen} />
+          <Logo
+            showText={sidebarOpen}
+            src='/images/favicon.webp'
+            imageClassName='w-16'
+          />
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className='p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400'
@@ -156,6 +160,14 @@ export default function DashboardLayout({
             <div className='h-1 bg-white/5 rounded-full overflow-hidden'>
               <div className='h-full w-2/3 bg-cyan-electric shadow-[0_0_5px_rgba(0,242,255,0.5)]' />
             </div>
+          </div>
+        )}
+
+        {sidebarOpen && (
+          <div className='px-6 py-2 mx-3 mt-auto mb-4 rounded-xl bg-white/[0.02] border border-white/5 text-center'>
+            <span className='text-[8px] font-black text-slate-500  tracking-widest'>
+              VSpeakX 1.0
+            </span>
           </div>
         )}
 

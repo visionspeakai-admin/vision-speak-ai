@@ -26,8 +26,8 @@ export default function DemoPage() {
 
       {/* Hero */}
       <HeroSection
-        badgeText='Interactive Demo'
-        title='Experience VisionSpeakAI in Action'
+        badgeText='Experience VisionSpeakAI'
+        title='VSpeakX 1.0 In Action'
         description='Try our AI models in real-time using your webcam. See lip-reading and gesture recognition powered by NVIDIA.'
         backgroundVariant='gradient'
       />
@@ -327,7 +327,7 @@ export default function DemoPage() {
             Impressed? Let's Build Together
           </h2>
           <p className='body-text mb-8'>
-            Integrate VisionSpeakAI into your application with our
+            Integrate VSpeakX 1.0 into your application with our
             production-grade APIs and SDKs.
           </p>
           <div className='flex flex-col sm:flex-row gap-4 justify-center'>

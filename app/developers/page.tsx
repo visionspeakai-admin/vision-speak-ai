@@ -9,6 +9,7 @@ import { Tabs } from "@/components/shared/tabs";
 import { FadeInUp } from "@/components/animations/fade-in-up";
 import { ScrollReveal } from "@/components/animations/scroll-reveal";
 import { Code, Book, Github, Zap, FileJson, Cpu } from "lucide-react";
+import Image from "next/image";
 
 export default function DevelopersPage() {
   const quickStart = [
@@ -24,7 +25,7 @@ export default function DevelopersPage() {
       title: "Install SDK",
       description:
         "Add our SDK to your project with your preferred package manager.",
-      code: "npm install visionspeakai",
+      code: "npm install VSpeakX 1.0",
     },
     {
       step: 3,
@@ -64,7 +65,7 @@ export default function DevelopersPage() {
   const codeExamples = [
     {
       language: "Python",
-      code: `import visionspeakai as vs
+      code: `import VSpeakX 1.0 as vs
 
 client = vs.Client(api_key="VS_KEY_...")
 
@@ -87,9 +88,9 @@ for gesture in gestures:
     },
     {
       language: "JavaScript",
-      code: `import VisionSpeakAI from 'visionspeakai';
+      code: `import VSpeakX 1.0 from 'VSpeakX 1.0';
 
-const client = new VisionSpeakAI({
+const client = new VSpeakX 1.0({
   apiKey: process.env.VS_API_KEY
 });
 
@@ -107,7 +108,7 @@ stream.setInput(video);`,
     },
     {
       language: "cURL",
-      code: `curl -X POST https://api.visionspeakai.com/v1/lip-read \\
+      code: `curl -X POST https://api.VSpeakX 1.0.com/v1/lip-read \\
   -H "Authorization: Bearer VS_KEY_..." \\
   -H "Content-Type: application/octet-stream" \\
   --data-binary @video.mp4
@@ -125,22 +126,17 @@ stream.setInput(video);`,
 
   const resources = [
     {
-      icon: <Book />,
+      icon: (
+        <Image
+          src='/images/d1.webp'
+          alt='API Docs icon'
+          width={48}
+          height={48}
+        />
+      ),
       title: "API Reference",
       description: "Complete endpoint documentation",
       link: "#api-reference",
-    },
-    {
-      icon: <Code />,
-      title: "Code Examples",
-      description: "Working examples in 5+ languages",
-      link: "#",
-    },
-    {
-      icon: <Zap />,
-      title: "Quick Start",
-      description: "5-minute setup guide",
-      link: "#",
     },
   ];
 
@@ -151,7 +147,7 @@ stream.setInput(video);`,
       {/* Hero */}
       <HeroSection
         badgeText='Developer Documentation'
-        title='Build with VisionSpeakAI'
+        title='Build With VSpeakX 1.0'
         description='Comprehensive APIs and SDKs to integrate lip-reading and gesture recognition into your applications.'
         primaryCta={{ text: "Get API Key", href: "/auth/login" }}
         secondaryCta={{ text: "View Docs", href: "#api-reference" }}
@@ -306,7 +302,7 @@ stream.setInput(video);`,
         <div className='text-center mb-12'>
           <h2 className='heading-lg mb-4 text-pretty'>Developer Resources</h2>
           <p className='body-text max-w-2xl mx-auto'>
-            Everything you need to build and deploy with VisionSpeakAI.
+            Everything you need to build and deploy with VSpeakX 1.0.
           </p>
         </div>
 

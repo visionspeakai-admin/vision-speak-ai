@@ -31,7 +31,7 @@ export function CurrentPlanCard({ plan, isLoading }: CurrentPlanCardProps) {
           <Crown size={20} className='text-cyan-electric' />
         </div>
         <p className='text-sm text-slate-400 mb-4'>
-          Start using VisionSpeakAI by selecting a plan.
+          Start using VSpeakX 1.0 by selecting a plan.
         </p>
         <Link
           href='/pricing'

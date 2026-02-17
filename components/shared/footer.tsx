@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
-import { FaPinterest, FaYoutube, FaFacebook } from "react-icons/fa";
+import { FaPinterest, FaYoutube, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { api } from "@/lib/api";
 import { getRecaptchaToken } from "@/components/providers/recaptcha-provider";
@@ -149,6 +149,17 @@ export function Footer() {
                 className='p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5'
               >
                 <FaFacebook
+                  size={18}
+                  className='text-slate-400 hover:text-white transition-colors'
+                />
+              </a>
+              <a
+                href='https://www.linkedin.com/company/visionspeak-ai/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='p-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/5'
+              >
+                <FaLinkedin
                   size={18}
                   className='text-slate-400 hover:text-white transition-colors'
                 />
