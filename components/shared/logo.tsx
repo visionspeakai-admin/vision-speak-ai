@@ -30,7 +30,7 @@ export function Logo({
       <motion.div
         className={cn(
           // size by height and let width follow the logo aspect ratio; allow hover glow to overflow
-          "relative inline-flex h-10 md:h-12 lg:h-16 rounded-xl items-center justify-center shadow-[0_0_20px_rgba(0,242,255,0.3)] overflow-visible transition-all",
+          "relative inline-flex h-10 md:h-12 lg:h-16 items-center justify-center overflow-visible transition-all",
           imageClassName,
         )}
         // prefer a 3:1 aspect by default (matches previous w-60 h-20); container height controls rendered size

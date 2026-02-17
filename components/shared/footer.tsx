@@ -66,8 +66,8 @@ export function Footer() {
           <div className='md:col-span-2 space-y-6'>
             <Logo />
             <p className='text-sm text-slate-400 max-w-xs leading-relaxed'>
-              AI-powered Lip-Reading & Gesture Recognition powered by NVIDIA
-              technology. Follow our journey.
+              Decode speech and gestures in real time with advanced vision
+              transformers and GPU-accelerated performance.
             </p>
 
             <div className='pt-4'>

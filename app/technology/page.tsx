@@ -83,8 +83,9 @@ export default function TechnologyPage() {
       {/* Hero */}
       <HeroSection
         badgeText='Technology & Architecture'
-        title='Cutting-Edge AI Meets NVIDIA Performance'
-        description="Deep dive into the neural networks and GPU acceleration powering VisionSpeakAI's industry-leading accuracy and speed."
+        title='Precision Recognition,'
+        subtitle=' Powered by VSpeakX 1.0'
+        description='Experience advanced lip-reading and gesture analysis with GPU-accelerated, production-ready performance.'
         backgroundVariant='grid'
       />
 

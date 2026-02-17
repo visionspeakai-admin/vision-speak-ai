@@ -23,7 +23,7 @@ export default function Home() {
   const features = [
     {
       icon: <Eye className='w-6 h-6' />,
-      title: "Lip-Reading AI",
+      title: "Lip-reading",
       description:
         "Advanced vision transformers capture and interpret lip movements with 95% accuracy across multiple languages.",
       badge: "Primary Feature",
@@ -38,8 +38,7 @@ export default function Home() {
       icon: <Zap className='w-6 h-6' />,
       title: "GPU Acceleration",
       description:
-        "Powered by NVIDIA CUDA technology for sub-100ms latency processing on RTX and A100 hardware.",
-      badge: "NVIDIA-Enabled",
+        "High-performance GPU processing enables sub-100ms latency for real-time recognition and analysis.",
       isHighlighted: true,
     },
     {
@@ -91,10 +90,10 @@ export default function Home() {
       {/* Hero Section */}
       <HeroSection
         badgeText='AI-Powered Communication Platform'
-        title='See What Others Say. Understand What Others Show.'
-        description='Revolutionary Lip-Reading and Gesture Recognition API powered by NVIDIA technology. Transform accessibility, security, and human-computer interaction.'
+        title='Watch the Silence Read the Motion'
+        description='Advanced Lip-Reading and Gesture Recognition API to enhance accessibility, security, and human-computer interaction with VSpeakX 1.0.'
         primaryCta={{ text: "Start Building", href: "/developers" }}
-        secondaryCta={{ text: "Watch Demo", href: "/demo" }}
+        secondaryCta={{ text: "Try VSpeakX", href: "/demo" }}
         backgroundVariant='gradient'
       >
         <div className='relative w-full h-80 md:h-[450px] mx-auto mt-16 rounded-3xl glass-effect overflow-hidden group border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)]'>
@@ -123,8 +122,8 @@ export default function Home() {
                 Interactive Vision Engine
               </h3>
               <p className='text-slate-400 text-sm max-w-md mx-auto'>
-                Analyzing real-time ocular and manual data streams via NVIDIA
-                TensorRT.
+                Processing real-time ocular and manual data streams for
+                high-performance results.
               </p>
             </div>
 
@@ -157,7 +156,7 @@ export default function Home() {
           </ScrollReveal>
           <div>
             <h2 className='heading-lg mb-6 text-pretty'>
-              AI-Powered Communication
+              Communication Made Smarter
             </h2>
             <p className='body-text mb-6'>
               Experience real-time lip-reading and transcription with
@@ -188,8 +187,8 @@ export default function Home() {
       <section className='py-16 md:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
         <ScrollReveal className='text-center mb-16'>
           <h2 className='heading-lg text-pretty'>
-            Performance Built on{" "}
-            <span className='glow-cyan uppercase'>NVIDIA</span> Excellence
+            Performance Built for{" "}
+            <span className='glow-cyan uppercase'>Lip & Gesture</span> Analysis
           </h2>
           <div className='w-24 h-1 bg-lime-bio mx-auto mt-4 rounded-full' />
         </ScrollReveal>
@@ -213,10 +212,8 @@ export default function Home() {
             CORE CAPABILITIES
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
-            State-of-the-art AI models trained on diverse datasets, optimized
-            for{" "}
-            <span className='text-lime-bio font-bold'>production-grade</span>{" "}
-            environments.
+            High-precision lip-reading and gesture models trained on diverse
+            datasets for scalable, low-latency deployment.
           </p>
         </ScrollReveal>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
@@ -236,18 +233,12 @@ export default function Home() {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-16 items-center'>
           {/* Left Content */}
           <div>
-            <div className='inline-block mb-4 px-4 py-2 rounded-xl glass-effect-strong border-cyan-electric/30'>
-              <span className='text-cyan-electric text-sm font-black uppercase tracking-widest'>
-                Powered by NVIDIA
-              </span>
-            </div>
             <h2 className='heading-lg mb-6 text-pretty font-black'>
               GPU-ACCELERATED INFERENCE
             </h2>
             <p className='body-text mb-8 text-white/80'>
-              Leveraging NVIDIA CUDA and cuDNN technology, VisionSpeakAI
-              delivers unprecedented performance. Our models run on modern
-              NVIDIA GPUs, achieving{" "}
+              High-performance GPU acceleration enables VisionSpeakAI to deliver
+              unprecedented speed and efficiency. Our models achieve{" "}
               <span className='text-cyan-electric font-bold'>
                 sub-100ms latency
               </span>{" "}
@@ -261,10 +252,11 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className='font-bold text-white text-lg'>
-                    CUDA Acceleration
+                    Parallel Processing
                   </h3>
                   <p className='text-sm text-slate-400'>
-                    Parallel processing for optimal throughput
+                    Optimized for maximum throughput across multiple visual data
+                    streams.
                   </p>
                 </div>
               </div>
@@ -275,10 +267,11 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className='font-bold text-white text-lg'>
-                    Real-time Processing
+                    Real-Time Processing
                   </h3>
                   <p className='text-sm text-slate-400'>
-                    Low-latency processing in mission-critical environments
+                    Low-latency inference for critical lip-reading and gesture
+                    recognition.
                   </p>
                 </div>
               </div>
@@ -292,7 +285,8 @@ export default function Home() {
                     Scalable Architecture
                   </h3>
                   <p className='text-sm text-slate-400'>
-                    Enterprise-ready deployment from edge to cloud
+                    Enterprise-ready deployment from edge devices to cloud
+                    environments.
                   </p>
                 </div>
               </div>
@@ -389,7 +383,7 @@ export default function Home() {
               READY TO TRANSFORM COMMUNICATION?
             </h2>
             <p className='body-text mb-10 text-white/70 relative z-10 max-w-2xl mx-auto'>
-              Join leading enterprises leveraging vision AI to create more
+              Join leading enterprises leveraging VSpeakX 1.0 to create more
               accessible, secure, and innovative human experiences.
             </p>
             <div className='flex flex-col sm:flex-row gap-6 justify-center relative z-10'>
