@@ -46,8 +46,16 @@ export function Footer() {
     Company: [
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Crunchbase", href: "https://www.crunchbase.com/organization/visionspeak-ai", external: true },
-      { label: "F6S", href: "https://www.f6s.com/visionspeak-ai", external: true },
+      {
+        label: "Crunchbase",
+        href: "https://www.crunchbase.com/organization/visionspeak-ai",
+        external: true,
+      },
+      {
+        label: "F6S",
+        href: "https://www.f6s.com/visionspeak-ai",
+        external: true,
+      },
     ],
     Developers: [
       { label: "Documentation", href: "/developers" },
@@ -182,7 +190,11 @@ export function Footer() {
                       <Link
                         href={link.href}
                         target={(link as any).external ? "_blank" : undefined}
-                        rel={(link as any).external ? "noopener noreferrer" : undefined}
+                        rel={
+                          (link as any).external
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
                         className='text-sm text-slate-400 hover:text-cyan-400 transition-colors'
                       >
                         {link.label}
