@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "VisionSpeakAI" }],
   creator: "VisionSpeakAI",
+  icons: {
+    icon: "/images/favicon.ico",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
