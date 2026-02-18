@@ -274,12 +274,12 @@ export default function DemoPage() {
             {
               title: "NVIDIA-Powered",
               description:
-                "Experience sub-100ms latency with GPU acceleration. Works on most modern devices.",
+                "Built on NVIDIA Metropolis framework with TensorRT optimization for sub-100ms latency. TAO-trained custom models with GPU acceleration.",
             },
             {
               title: "Production Ready",
               description:
-                "The same models used by our enterprise customers. Try before you integrate.",
+                "Deployed via NVIDIA Triton Inference Server for enterprise-grade scalability. The same pipeline used by production customers.",
             },
           ].map((feature, index) => (
             <div key={index} className='glass-effect p-6 rounded-xl'>
@@ -297,14 +297,21 @@ export default function DemoPage() {
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             {[
               { label: "Model Version", value: "VisionSpeak v2.1.0" },
+              { label: "Framework", value: "NVIDIA Metropolis + DeepStream" },
+              { label: "Model Optimization", value: "NVIDIA TensorRT" },
+              { label: "Inference Server", value: "NVIDIA Triton" },
+              { label: "Custom Models", value: "TAO Toolkit Fine-tuned" },
+              { label: "Frame Rate", value: "30 FPS GPU-accelerated" },
               { label: "Input Resolution", value: "1080p (adjustable)" },
-              { label: "Frame Rate", value: "30 FPS" },
               {
                 label: "Supported Browsers",
                 value: "Chrome, Firefox, Safari, Edge",
               },
               { label: "Minimum GPU", value: "Any GPU with WebGL 2.0" },
-              { label: "Latency", value: "<100ms per frame" },
+              {
+                label: "Latency",
+                value: "<100ms per frame (TensorRT optimized)",
+              },
             ].map((spec, index) => (
               <div
                 key={index}

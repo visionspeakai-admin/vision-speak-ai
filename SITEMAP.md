@@ -3,6 +3,7 @@
 ## Public Pages (Marketing & Info)
 
 ### Landing Page
+
 - **Route**: `/`
 - **Purpose**: Main entry point with hero, features, NVIDIA highlights, CTAs
 - **Key Sections**:
@@ -14,6 +15,7 @@
   - Call-to-Action Banner
 
 ### Technology Page
+
 - **Route**: `/technology`
 - **Purpose**: Deep-dive into architecture and NVIDIA technology (PRIMARY NVIDIA FOCUS)
 - **Key Sections**:
@@ -25,6 +27,7 @@
   - Scalability Information
 
 ### Solutions Page
+
 - **Route**: `/solutions`
 - **Purpose**: Industry use cases and solution categories
 - **Key Sections**:
@@ -36,6 +39,7 @@
   - Integration Details
 
 ### Pricing Page
+
 - **Route**: `/pricing`
 - **Purpose**: Pricing tiers and feature comparison
 - **Key Sections**:
@@ -46,6 +50,7 @@
   - Sales CTA
 
 ### Developer Portal
+
 - **Route**: `/developers`
 - **Purpose**: API documentation and developer resources
 - **Key Sections**:
@@ -57,7 +62,8 @@
   - Documentation Links
 
 ### Interactive Demo
-- **Route**: `/demo`
+
+- **Route**: `/VSpeakX`
 - **Purpose**: Try gesture and lip-reading recognition
 - **Key Sections**:
   - Demo Mode Selector
@@ -67,6 +73,7 @@
   - Test Interface
 
 ### Component Styleguide
+
 - **Route**: `/styleguide`
 - **Purpose**: Showcase all components and design system
 - **Key Sections**:
@@ -84,6 +91,7 @@
 ## Authentication Pages
 
 ### Login Page
+
 - **Route**: `/auth/login`
 - **Purpose**: User login interface
 - **Elements**:
@@ -95,6 +103,7 @@
   - Sign up link
 
 ### Sign Up Page
+
 - **Route**: `/auth/signup`
 - **Purpose**: User registration
 - **Elements**:
@@ -110,6 +119,7 @@
 ## Dashboard Pages (Protected)
 
 ### Dashboard Layout
+
 - **Location**: `/app/dashboard/layout.tsx`
 - **Features**:
   - Collapsible sidebar navigation
@@ -119,6 +129,7 @@
   - Mobile hamburger menu
 
 ### Dashboard Overview
+
 - **Route**: `/dashboard/overview`
 - **Purpose**: Main dashboard with key metrics
 - **Key Sections**:
@@ -129,6 +140,7 @@
   - Recent Activity
 
 ### Analytics
+
 - **Route**: `/dashboard/analytics`
 - **Purpose**: Detailed usage analytics
 - **Key Sections**:
@@ -140,6 +152,7 @@
   - Geographic Analytics
 
 ### API Keys Management
+
 - **Route**: `/dashboard/api-keys`
 - **Purpose**: Generate and manage API keys
 - **Key Sections**:
@@ -151,6 +164,7 @@
   - Best Practices Guide
 
 ### Integrations
+
 - **Route**: `/dashboard/integrations`
 - **Purpose**: Manage third-party integrations
 - **Key Sections**:
@@ -161,6 +175,7 @@
   - Custom Integration Info
 
 ### Settings
+
 - **Route**: `/dashboard/settings`
 - **Purpose**: Account and preference settings
 - **Key Sections**:
@@ -172,6 +187,7 @@
   - Data Export Option
 
 ### Documentation
+
 - **Route**: `/dashboard/documentation`
 - **Purpose**: Quick access to documentation
 - **Key Sections**:
@@ -195,7 +211,7 @@ VisionSpeakAI
 │   ├── /solutions
 │   ├── /pricing
 │   ├── /developers
-│   ├── /demo
+│   ├── /VSpeakX
 │   └── /styleguide
 │
 ├── Authentication
@@ -218,24 +234,28 @@ VisionSpeakAI
 ## Quick Navigation by Purpose
 
 ### For New Visitors
+
 1. Start at `/` (Landing Page)
 2. Learn more at `/solutions` (Use Cases)
 3. Check pricing at `/pricing`
-4. Try at `/demo` (Interactive Demo)
+4. Try at `/VSpeakX` (Interactive Demo)
 
 ### For Developers
+
 1. Visit `/developers` (Developer Portal)
 2. Check `/styleguide` (Component Showcase)
 3. Reference API docs (in /developers)
 4. Get API Key at `/dashboard/api-keys`
 
 ### For Existing Users
+
 1. Log in at `/auth/login`
 2. Go to `/dashboard/overview` (Main Dashboard)
 3. Manage keys at `/dashboard/api-keys`
 4. View analytics at `/dashboard/analytics`
 
 ### For Decision Makers
+
 1. Visit `/` (Landing Page)
 2. Learn technology at `/technology`
 3. Explore solutions at `/solutions`
@@ -243,6 +263,7 @@ VisionSpeakAI
 5. Request demo via CTA
 
 ### For Content Reference
+
 1. See all components at `/styleguide`
 2. Read documentation in `/dashboard/documentation`
 3. View code examples at `/developers`
@@ -252,17 +273,19 @@ VisionSpeakAI
 ## URL Pattern Reference
 
 ### Public Routes
+
 ```
 /                    # Landing
 /technology          # Technology details
 /solutions           # Use cases
 /pricing             # Pricing
 /developers          # API docs
-/demo                # Demo
+/VSpeakX             # Interactive Demo
 /styleguide          # Components
 ```
 
 ### Auth Routes
+
 ```
 /auth/login          # Login
 /auth/signup         # Register
@@ -271,6 +294,7 @@ VisionSpeakAI
 ```
 
 ### Protected Dashboard Routes
+
 ```
 /dashboard/          # Base (redirects to /overview)
 /dashboard/overview  # Main dashboard
@@ -286,22 +310,26 @@ VisionSpeakAI
 ## Navigation Components
 
 ### Global Navigation
+
 - **Location**: Top of every page
 - **Components**: Logo, Menu, CTA Button
 - **Mobile**: Hamburger menu
 - **Features**: Sticky on scroll, responsive
 
 ### Footer
+
 - **Location**: Bottom of every page
 - **Components**: Links, Social Icons, Copyright
 - **Links**: All main pages, legal, social
 
 ### Dashboard Sidebar
+
 - **Location**: Left side of dashboard
 - **Components**: Logo, Navigation items, Logout
 - **Features**: Collapsible, responsive, icons
 
 ### Breadcrumbs
+
 - **Location**: Above page title (dashboard)
 - **Shows**: Current page hierarchy
 
@@ -310,6 +338,7 @@ VisionSpeakAI
 ## API Reference (In /developers)
 
 ### Endpoints
+
 1. **POST /api/v1/lip-read**
    - Analyze lip movements
    - Parameters: video_stream, language, confidence_threshold
@@ -329,23 +358,24 @@ VisionSpeakAI
 
 ## Feature Access Matrix
 
-| Feature | Landing | Tech | Solutions | Pricing | Developers | Demo | Dashboard |
-|---------|---------|------|-----------|---------|-----------|------|-----------|
-| Marketing Copy | ✅ | ✅ | ✅ | ✅ | - | - | - |
-| NVIDIA Info | ✅ | ✅✅ | ✅ | - | ✅ | - | - |
-| Pricing | - | - | - | ✅ | - | - | - |
-| API Docs | - | - | - | - | ✅ | - | - |
-| Live Demo | - | - | - | - | - | ✅ | - |
-| Code Examples | - | - | - | - | ✅ | - | - |
-| User Account | - | - | - | - | - | - | ✅ |
-| API Keys | - | - | - | - | - | - | ✅ |
-| Analytics | - | - | - | - | - | - | ✅ |
+| Feature        | Landing | Tech | Solutions | Pricing | Developers | Demo | Dashboard |
+| -------------- | ------- | ---- | --------- | ------- | ---------- | ---- | --------- |
+| Marketing Copy | ✅      | ✅   | ✅        | ✅      | -          | -    | -         |
+| NVIDIA Info    | ✅      | ✅✅ | ✅        | -       | ✅         | -    | -         |
+| Pricing        | -       | -    | -         | ✅      | -          | -    | -         |
+| API Docs       | -       | -    | -         | -       | ✅         | -    | -         |
+| Live Demo      | -       | -    | -         | -       | -          | ✅   | -         |
+| Code Examples  | -       | -    | -         | -       | ✅         | -    | -         |
+| User Account   | -       | -    | -         | -       | -          | -    | ✅        |
+| API Keys       | -       | -    | -         | -       | -          | -    | ✅        |
+| Analytics      | -       | -    | -         | -       | -          | -    | ✅        |
 
 ---
 
 ## SEO & Metadata
 
 All pages include:
+
 - ✅ Optimized title tags
 - ✅ Meta descriptions
 - ✅ Open Graph tags
@@ -379,12 +409,14 @@ All pages include:
 ## Deep Links & Anchors
 
 ### Landing Page Anchors
+
 - `/#features` - Features section
 - `/#use-cases` - Use cases section
 - `/#nvidia` - NVIDIA section
 - `/#cta` - Call-to-action
 
 ### Dashboard Anchors
+
 - `/dashboard/settings#profile` - Profile settings
 - `/dashboard/settings#security` - Security settings
 
@@ -393,6 +425,7 @@ All pages include:
 ## Related Components
 
 Each page uses:
+
 - **Navigation** - Top navigation bar
 - **Footer** - Bottom footer
 - **HeroSection** - Page hero

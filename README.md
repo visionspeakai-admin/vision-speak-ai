@@ -5,6 +5,7 @@ A cutting-edge marketing website and interactive SaaS dashboard for VisionSpeakA
 ## Features
 
 ### Marketing Website
+
 - **Landing Page**: Hero section with metrics, core capabilities, and use cases
 - **Technology Page**: Deep-dive into neural networks, NVIDIA CUDA acceleration, and benchmarks
 - **Solutions Page**: Four solution categories with benefits and integration details
@@ -13,6 +14,7 @@ A cutting-edge marketing website and interactive SaaS dashboard for VisionSpeakA
 - **Interactive Demo**: Gesture and lip-reading recognition simulation
 
 ### SaaS Dashboard
+
 - **Authentication**: Login and registration flows
 - **Dashboard Overview**: Key metrics and quick stats
 - **Analytics**: Usage tracking and performance metrics
@@ -22,6 +24,7 @@ A cutting-edge marketing website and interactive SaaS dashboard for VisionSpeakA
 - **Documentation**: Embedded guides and API references
 
 ### Design
+
 - **Cyber-Precision Theme**: Dark obsidian background with electric cyan accents
 - **Glassmorphic UI**: Semi-transparent frosted glass effects
 - **Smooth Animations**: Scroll-triggered reveals and staggered text
@@ -42,6 +45,7 @@ A cutting-edge marketing website and interactive SaaS dashboard for VisionSpeakA
 ## Quick Start
 
 ### Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -53,6 +57,7 @@ npm run dev
 Visit `http://localhost:3000` in your browser.
 
 ### Build for Production
+
 ```bash
 npm run build
 npm start
@@ -72,21 +77,22 @@ npm start
 
 ## Pages
 
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page with hero, features, and NVIDIA highlights |
-| `/technology` | Technical architecture and NVIDIA CUDA details |
-| `/solutions` | Use cases and industry solutions |
-| `/pricing` | Pricing tiers and feature comparison |
-| `/developers` | API documentation and code examples |
-| `/demo` | Interactive AI demo interface |
-| `/auth/login` | User login page |
-| `/auth/signup` | User registration page |
-| `/dashboard/*` | Protected SaaS dashboard routes |
+| Route          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `/`            | Landing page with hero, features, and NVIDIA highlights |
+| `/technology`  | Technical architecture and NVIDIA CUDA details          |
+| `/solutions`   | Use cases and industry solutions                        |
+| `/pricing`     | Pricing tiers and feature comparison                    |
+| `/developers`  | API documentation and code examples                     |
+| `/VSpeakX`     | Interactive AI demo interface                           |
+| `/auth/login`  | User login page                                         |
+| `/auth/signup` | User registration page                                  |
+| `/dashboard/*` | Protected SaaS dashboard routes                         |
 
 ## Key Components
 
 ### Shared
+
 - `Navigation` - Sticky header with mobile menu
 - `HeroSection` - Reusable hero template
 - `FeatureCard` - Glassmorphic card component
@@ -97,6 +103,7 @@ npm start
 - `Tabs` - Tabbed content switcher
 
 ### Animations
+
 - `StaggeredText` - Word-by-word reveal
 - `FadeInUp` - Scroll-triggered fade and slide
 - `ScrollReveal` - Directional scroll reveal
@@ -105,17 +112,20 @@ npm start
 ## Design System
 
 ### Colors
+
 - **Primary**: Deep Obsidian (#050505)
 - **Accent**: Electric Cyan (#00F2FF)
 - **Secondary Accent**: Bio-Lime (#CCFF00)
 - **Text**: Off-white (#F8F8F8)
 
 ### Typography
+
 - **Font**: Inter (sans-serif)
 - **Headings**: XL (48px), LG (36px), MD (28px), SM (20px)
 - **Body**: 16-18px with 1.4-1.6 line-height
 
 ### Animations
+
 - Scroll-triggered reveals
 - Staggered text animations
 - Smooth hover effects
@@ -137,6 +147,7 @@ VisionSpeakAI prominently features NVIDIA technology integration:
 ## Deployment
 
 ### Deploy to Vercel
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -150,6 +161,7 @@ The application is optimized for Vercel deployment with automatic builds and pre
 ## Environment Variables
 
 Create a `.env.local` file for local development (optional for frontend-only):
+
 ```
 # Add any required API keys here
 ```
@@ -172,6 +184,7 @@ Create a `.env.local` file for local development (optional for frontend-only):
 ## Contributing
 
 When adding new components:
+
 1. Place shared components in `/components/shared`
 2. Add animations to `/components/animations`
 3. Follow the existing Tailwind CSS patterns

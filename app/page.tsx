@@ -170,7 +170,7 @@ export default function Home() {
         title='Watch the Silence Read the Motion'
         description='Advanced Lip-Reading and Gesture Recognition API to enhance accessibility, security, and human-computer interaction with VSpeakX 1.0.'
         primaryCta={{ text: "Start Building", href: "/developers" }}
-        secondaryCta={{ text: "Try VSpeakX", href: "/demo" }}
+        secondaryCta={{ text: "Try VSpeakX", href: "/VSpeakX" }}
         backgroundVariant='gradient'
       >
         <div className='relative w-full h-80 md:h-[450px] mx-auto mt-16 rounded-3xl glass-effect overflow-hidden group border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)]'>
@@ -482,7 +482,7 @@ export default function Home() {
               <a href='/auth/signup' className='glow-button px-10'>
                 Get API Access
               </a>
-              <a href='/demo' className='glow-button-secondary px-10'>
+              <a href='/VSpeakX' className='glow-button-secondary px-10'>
                 Watch Demo
               </a>
             </div>
