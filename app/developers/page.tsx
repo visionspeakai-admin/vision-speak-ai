@@ -149,7 +149,7 @@ stream.setInput(video);`,
         badgeText='Developer Documentation'
         title='Build With VSpeakX 1.0'
         description='Comprehensive APIs and SDKs to integrate lip-reading and gesture recognition into your applications.'
-        primaryCta={{ text: "Get API Key", href: "/auth/login" }}
+        primaryCta={{ text: "Get Started", href: "/VSpeakX" }}
         secondaryCta={{ text: "View Docs", href: "#api-reference" }}
         backgroundVariant='gradient'
       />

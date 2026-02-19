@@ -432,8 +432,8 @@ export default function Home() {
             Real-World Applications
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
-            From accessibility solutions to enterprise security, VSpeakX 1.0 powers
-            transformative applications.
+            From accessibility solutions to enterprise security, VSpeakX 1.0
+            powers transformative applications.
           </p>
         </ScrollReveal>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12'>
@@ -478,8 +478,8 @@ export default function Home() {
               accessible, secure, and innovative human experiences.
             </p>
             <div className='flex flex-col sm:flex-row gap-6 justify-center relative z-10'>
-              <a href='/auth/signup' className='glow-button px-10'>
-                Get API Access
+              <a href='/developers' className='glow-button px-10'>
+                Start Building
               </a>
               <a href='/VSpeakX' className='glow-button-secondary px-10'>
                 Watch Demo
