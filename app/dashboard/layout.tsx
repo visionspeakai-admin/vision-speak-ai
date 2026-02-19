@@ -90,7 +90,7 @@ export default function DashboardLayout({
     <div className='min-h-screen bg-background'>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen glass-effect border-r border-white/10 transition-all duration-300 ${
+        className={`hidden md:flex fixed left-0 top-0 h-screen glass-effect border-r border-white/10 transition-all duration-300 ${
           sidebarOpen ? "w-64" : "w-20"
         } flex flex-col z-50`}
       >
@@ -201,7 +201,9 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-20"}`}
+        className={`transition-all duration-300 ${
+          sidebarOpen ? "md:ml-64" : "md:ml-20"
+        } ml-0`}
       >
         {/* Top Bar */}
         <header className='sticky top-0 z-40 glass-effect border-b border-white/10 h-20'>
