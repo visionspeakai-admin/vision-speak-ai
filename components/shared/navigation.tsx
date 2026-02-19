@@ -47,6 +47,16 @@ export function Navigation() {
     };
   }, []);
 
+  // Hide the global/top navigation on mobile when viewing dashboard routes
+  // — dashboard provides its own header to avoid duplicate nav bars.
+  if (
+    typeof window !== "undefined" &&
+    isMobile &&
+    pathname?.startsWith("/dashboard")
+  ) {
+    return null;
+  }
+
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Technology", href: "/technology" },
