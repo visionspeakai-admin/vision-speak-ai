@@ -4,7 +4,7 @@ import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
-import { Logo } from "@/components/shared/logo";
+import { AuthBackButton } from "@/components/shared/back-to-home";
 
 function AuthCompleteContent() {
   const router = useRouter();
@@ -27,12 +27,7 @@ function AuthCompleteContent() {
 
   return (
     <div className='flex h-screen w-full items-center justify-center bg-background'>
-      <div className='absolute top-6 left-6 z-20 flex flex-col items-center gap-2'>
-        <Logo />
-        <div className='text-xs text-slate-400 hover:text-slate-300 transition-colors'>
-          Back to home
-        </div>
-      </div>
+      <AuthBackButton />
       <div className='text-center'>
         <div className='mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-primary mx-auto'></div>
         <h2 className='text-xl font-semibold text-foreground'>

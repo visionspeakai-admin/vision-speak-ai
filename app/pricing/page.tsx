@@ -268,9 +268,12 @@ export default function PricingPage() {
             </div>
           ) : (
             plans.map((plan: Plan, index: number) => {
-              const displayPrice = isYearly
-                ? plan.price_yearly || plan.price * 10
-                : plan.price;
+              const rawDisplayPrice = isYearly
+                ? (plan.price_yearly ?? Number(plan.price) * 10)
+                : Number(plan.price ?? 0);
+              const displayPrice = Number.isFinite(Number(rawDisplayPrice))
+                ? Number(rawDisplayPrice)
+                : 0;
               const period = isYearly ? "/year" : "/month";
               const isPro = plan.slug === "pro";
 
@@ -304,7 +307,7 @@ export default function PricingPage() {
                         {displayPrice > 0 ? (
                           <div className='flex items-baseline gap-2 mb-2'>
                             <span className='text-5xl md:text-6xl font-black text-cyan-electric tracking-tighter drop-shadow-sm'>
-                              ${displayPrice}
+                              ${displayPrice.toFixed(2)}
                             </span>
                             <span className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
                               {period}
@@ -514,7 +517,7 @@ export default function PricingPage() {
               Choose your plan and start building in minutes. Our team is here
               to help you succeed.
             </p>
-            <Link href='/auth/login' className='inline-block glow-button'>
+            <Link href='/VSpeakX' className='inline-block glow-button'>
               Get Started Free
             </Link>
           </div>

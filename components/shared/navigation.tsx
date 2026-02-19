@@ -56,6 +56,20 @@ export function Navigation() {
     { label: "Pricing", href: "/pricing" },
   ];
 
+  // Helper: normalize paths and treat sub-routes as active for their parent nav item
+  const normalizePath = (p?: string | null) => {
+    if (!p) return "/";
+    if (p === "/") return "/";
+    return p.replace(/\/$/, "");
+  };
+
+  const isLinkActive = (href: string) => {
+    const current = normalizePath(pathname);
+    const target = normalizePath(href);
+    if (target === "/") return current === "/"; // exact for home
+    return current === target || current.startsWith(target + "/");
+  };
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -90,7 +104,7 @@ export function Navigation() {
           {/* Desktop Navigation */}
           <div className='hidden md:flex items-center gap-1'>
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = isLinkActive(link.href);
               return (
                 <Link
                   key={link.href}
@@ -242,7 +256,7 @@ export function Navigation() {
                       href={link.href}
                       className={cn(
                         "text-2xl font-bold transition-colors block",
-                        pathname === link.href
+                        isLinkActive(link.href)
                           ? "text-cyan-electric"
                           : "text-white/60 hover:text-white",
                       )}

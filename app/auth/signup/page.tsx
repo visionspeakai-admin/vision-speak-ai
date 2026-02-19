@@ -6,7 +6,7 @@ import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { getRecaptchaToken } from "@/components/providers/recaptcha-provider";
-import { Logo } from "@/components/shared/logo";
+import { AuthBackButton } from "@/components/shared/back-to-home";
 import { motion } from "framer-motion";
 
 export default function SignupPage() {
@@ -129,6 +129,16 @@ export default function SignupPage() {
         /already exists|taken|duplicate/i.test(err.message)
       ) {
         setError("An account with that email already exists. Try signing in.");
+      } else if (
+        err &&
+        (err.code === 500 ||
+          /smtp|mailer|transportexception|Failed to authenticate on SMTP/i.test(
+            err.message || "",
+          ))
+      ) {
+        setError(
+          "Registration failed because the email service is unavailable. Your account may or may not have been created — please try again later or contact support@visionspeakai.com.",
+        );
       } else {
         setError(err?.message || "Registration failed. Please try again.");
       }
@@ -154,13 +164,8 @@ export default function SignupPage() {
 
   return (
     <div className='min-h-screen bg-background flex items-center justify-center p-4 py-12 relative overflow-hidden'>
-      {/* Top Right Logo & Back Link */}
-      <div className='absolute top-6 left-6 z-20 flex flex-col items-center gap-2'>
-        <Logo />
-        <div className='text-xs text-slate-400 hover:text-slate-300 transition-colors'>
-          Back to home
-        </div>
-      </div>
+      {/* Back to home button + logo */}
+      <AuthBackButton />
 
       {/* Animated Background Gradients */}
       <div className='absolute inset-0 -z-10'>

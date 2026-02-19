@@ -62,7 +62,7 @@ export default function ContactPage() {
 
     try {
       const captcha_token = await getRecaptchaToken("contact");
-      const response = await api.post("/contact", {
+      const response = await api.post("/mail/contact", {
         ...formData,
         captcha_token,
       });
@@ -70,10 +70,24 @@ export default function ContactPage() {
       if (response.status === "success") {
         setStatus("success");
         setFormData({ name: "", email: "", subject: "", message: "" });
+        return;
       }
-    } catch (error) {
+
+      // If API returns error-like shape, surface a helpful message
+      if (response && response.message) {
+        throw response;
+      }
+    } catch (error: any) {
       console.error("Contact error:", error);
-      setStatus("error");
+      // show server message when available
+      if (error && error.message) {
+        setStatus("error");
+        // replace generic status with more informative message by rendering error.message in UI
+        // store message temporarily in `message` field of formData.subject for display (minimal change)
+        setFormData((f) => ({ ...f, subject: error.message }));
+      } else {
+        setStatus("error");
+      }
     } finally {
       setIsLoading(false);
     }

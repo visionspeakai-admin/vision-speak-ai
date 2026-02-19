@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   BarChart3,
@@ -16,6 +16,7 @@ import {
   Bell,
   Loader2,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter } from "next/navigation";
@@ -73,6 +74,17 @@ export default function DashboardLayout({
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${(firstName || "U")[0]}${(lastName || "")[0] || ""}`.toUpperCase();
   };
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // prevent body scroll when mobile menu is open
+    if (mobileMenuOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "unset";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <div className='min-h-screen bg-background'>
@@ -194,7 +206,22 @@ export default function DashboardLayout({
         {/* Top Bar */}
         <header className='sticky top-0 z-40 glass-effect border-b border-white/10 h-20'>
           <div className='h-full px-6 flex items-center justify-between'>
-            <div className='flex-1' />
+            {/* Mobile menu button (top-left) — hidden on md+ */}
+            <div className='flex items-center gap-3'>
+              {!mobileMenuOpen && (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setMobileMenuOpen(true)}
+                  className='md:hidden p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors relative z-50'
+                  aria-label='Open menu'
+                >
+                  <Menu size={20} />
+                </motion.button>
+              )}
+
+              {/* keep header spacing on larger screens */}
+              <div className='hidden md:block' />
+            </div>
 
             {/* Right Actions */}
             <div className='flex items-center gap-4'>
@@ -228,6 +255,86 @@ export default function DashboardLayout({
               </div>
             </div>
           </div>
+
+          {/* Mobile floating menu overlay */}
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className='fixed inset-0 z-50 md:hidden'
+                style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className='absolute left-4 top-4 right-4 mx-auto max-w-md rounded-xl bg-sidebar p-4 border border-white/6 shadow-2xl'
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className='flex items-center justify-between mb-4'>
+                    <div className='flex items-center gap-3'>
+                      <Logo imageClassName='w-28' />
+                      <div className='text-sm'>
+                        <p className='font-semibold text-white'>
+                          {user?.first_name} {user?.last_name || ""}
+                        </p>
+                        <p className='text-xs text-slate-400 uppercase'>
+                          {user?.current_plan || "Free Plan"}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className='p-2 rounded-lg hover:bg-white/5 text-slate-300'
+                      aria-label='Close menu'
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  <nav className='flex flex-col gap-2'>
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className='flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-colors text-white font-semibold'
+                      >
+                        <item.icon className='w-5 h-5 text-slate-400' />
+                        <span className='text-sm uppercase tracking-wider'>
+                          {item.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </nav>
+
+                  <div className='mt-4 border-t border-white/6 pt-4 flex gap-2'>
+                    <Link
+                      href='/dashboard'
+                      onClick={() => setMobileMenuOpen(false)}
+                      className='flex-1 py-2 text-center rounded-lg glow-button text-sm font-bold'
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className='flex-1 py-2 rounded-lg border border-white/10 text-sm font-bold hover:bg-white/5'
+                    >
+                      Log out
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </header>
 
         {/* Page Content */}

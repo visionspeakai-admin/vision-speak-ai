@@ -44,7 +44,6 @@ export function Footer() {
       { label: "Pricing", href: "/pricing" },
     ],
     Company: [
-      { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
       {
         label: "Crunchbase",
