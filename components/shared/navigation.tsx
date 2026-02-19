@@ -136,7 +136,7 @@ export function Navigation() {
                   href='/VSpeakX'
                   className='px-6 py-2.5 text-sm font-bold rounded-xl glow-button'
                 >
-                  Try VSpeakX
+                  Try VSpeakX 1.0
                 </Link>
               )}
             </div>

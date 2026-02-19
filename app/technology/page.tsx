@@ -35,7 +35,7 @@ export default function TechnologyPage() {
       ),
       title: "GPU ACCELERATION",
       description:
-        "Full NVIDIA acceleration stack enabling 45% faster inference on RTX and A100 GPUs with optimized memory management.",
+        "High-performance GPU processing enables up to 45% faster inference with optimized memory management.",
     },
     {
       icon: (
