@@ -38,7 +38,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "VSpeakX 1.0 transformed how we handle accessibility. Our team can now reach 40% more users without additional resources. The accuracy is incredible.",
-    author: "Sarah Mitchell",
+    author: "Sophia Carter",
     role: "Accessibility Director",
     company: "TechAccessHub Inc.",
     rating: 5,
@@ -47,7 +47,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "The real-time processing speed is unmatched. We integrated VSpeakX 1.0 into our retail operations and saw a 35% improvement in customer engagement metrics.",
-    author: "Marcus Chen",
+    author: "Liam Bennett",
     role: "CTO",
     company: "RetailVision Solutions",
     rating: 5,
@@ -56,7 +56,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "Enterprise support is exceptional. Their team helped us scale from 100 to 1M+ requests per day seamlessly. Worth every penny.",
-    author: "Jennifer Rodriguez",
+    author: "Isabella Thompson",
     role: "Head of Innovation",
     company: "CloudScale Analytics",
     rating: 5,
@@ -65,7 +65,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "The API documentation is thorough and the developer experience is smooth. We had our integration running in production within 48 hours.",
-    author: "David Kim",
+    author: "Noah Anderson",
     role: "Senior Engineer",
     company: "NeuralWorks",
     rating: 5,
