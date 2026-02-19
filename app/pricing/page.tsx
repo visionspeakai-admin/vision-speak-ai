@@ -295,10 +295,14 @@ export default function PricingPage() {
 
                     <div className='p-6 md:p-8'>
                       {/* Header */}
-                      <h3 className={`${isYearly ? 'text-base md:text-lg' : 'text-lg md:text-xl'} font-bold text-foreground mb-2`}>
+                      <h3
+                        className={`${isYearly ? "text-base md:text-lg" : "text-lg md:text-xl"} font-bold text-foreground mb-2`}
+                      >
                         {plan.name}
                       </h3>
-                      <p className={`${isYearly ? 'text-xs' : 'text-sm'} text-muted-foreground mb-6`}>
+                      <p
+                        className={`${isYearly ? "text-xs" : "text-sm"} text-muted-foreground mb-6`}
+                      >
                         {plan.description}
                       </p>
 
@@ -306,7 +310,9 @@ export default function PricingPage() {
                       <div className='mb-10'>
                         {displayPrice > 0 ? (
                           <div className='flex items-baseline gap-2 mb-2'>
-                            <span className={`${isYearly ? 'text-4xl md:text-5xl' : 'text-5xl md:text-6xl'} font-black text-cyan-electric tracking-tighter drop-shadow-sm`}>
+                            <span
+                              className={`${isYearly ? "text-4xl md:text-5xl" : "text-5xl md:text-6xl"} font-black text-cyan-electric tracking-tighter drop-shadow-sm`}
+                            >
                               ${displayPrice.toFixed(2)}
                             </span>
                             <span className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
@@ -338,7 +344,9 @@ export default function PricingPage() {
                           (feature: any, idx: number) => (
                             <div key={idx} className='flex gap-4'>
                               <Check className='w-4 h-4 text-lime-bio flex-shrink-0 mt-0.5' />
-                              <span className={`${isYearly ? 'text-xs' : 'text-sm'} font-bold text-slate-300 uppercase tracking-tight`}>
+                              <span
+                                className={`${isYearly ? "text-xs" : "text-sm"} font-bold text-slate-300 uppercase tracking-tight`}
+                              >
                                 {feature.name || feature}
                               </span>
                             </div>
