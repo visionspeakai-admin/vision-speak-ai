@@ -351,7 +351,7 @@ export default function SolutionsPage() {
               Explore API
             </a>
             <a
-              href='#'
+              href='/contact'
               className='px-6 py-3 font-semibold rounded-lg border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all'
             >
               Contact Sales

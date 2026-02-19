@@ -155,7 +155,7 @@ export default function DocumentationPage() {
           Our support team is ready to help. Check out our community forums or contact support directly.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
-          <a href="#" className="px-4 py-2 rounded-lg glow-button text-sm font-semibold">
+          <a href="/contact" className="px-4 py-2 rounded-lg glow-button text-sm font-semibold">
             Contact Support
           </a>
           <a
