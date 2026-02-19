@@ -35,15 +35,20 @@ export function Navigation() {
     const update = () =>
       setIsMobile(Boolean(mq ? mq.matches : window.innerWidth < 768));
     update();
-    mq?.addEventListener?.("change", update);
+    if (mq) {
+      mq.addEventListener("change", update);
+    }
     window.addEventListener("resize", update);
     return () => {
-      mq?.removeEventListener?.("change", update);
+      if (mq) {
+        mq.removeEventListener("change", update);
+      }
       window.removeEventListener("resize", update);
     };
   }, []);
 
   const navLinks = [
+    { label: "Home", href: "/" },
     { label: "Technology", href: "/technology" },
     { label: "Solutions", href: "/solutions" },
     { label: "Contact", href: "/contact" },
