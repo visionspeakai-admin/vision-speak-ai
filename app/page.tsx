@@ -432,7 +432,7 @@ export default function Home() {
             Real-World Applications
           </h2>
           <p className='body-text max-w-2xl mx-auto'>
-            From accessibility solutions to enterprise security, VSpeakX powers
+            From accessibility solutions to enterprise security, VSpeakX 1.0 powers
             transformative applications.
           </p>
         </ScrollReveal>
