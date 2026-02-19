@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -34,17 +35,47 @@ export default function LoginPage() {
       .join("");
   };
 
+  const validateLogin = () => {
+    const errors: Record<string, string> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email))
+      errors.email = "Please enter a valid email address.";
+    if (!password) errors.password = "Please enter your password.";
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setFormErrors({});
+
+    if (!validateLogin()) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const captcha_token = await getRecaptchaToken("login");
       const password_hash = await hashPassword(password);
       await login(email, password_hash);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Login failed. Please check your credentials.");
+      if (err && err.code === 401) {
+        setError("Invalid email or password.");
+      } else if (err && err.code === 422 && err.errors) {
+        const backendErrors: Record<string, string> = {};
+        Object.entries(err.errors).forEach(([k, v]) => {
+          backendErrors[k] = Array.isArray(v) ? (v[0] as string) : String(v);
+        });
+        setFormErrors((prev) => ({ ...prev, ...backendErrors }));
+        setError("Please fix the highlighted fields.");
+      } else {
+        setError(
+          err?.message || "Login failed. Please check your credentials.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -161,10 +192,19 @@ export default function LoginPage() {
                   id='email'
                   type='email'
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setFormErrors((p) => ({ ...p, email: "" }));
+                    setError(null);
+                  }}
                   placeholder='you@visionspeakai.com'
                   className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                 />
+                {formErrors.email && (
+                  <p className='text-red-400 text-xs mt-1'>
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -180,10 +220,19 @@ export default function LoginPage() {
                     id='password'
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setFormErrors((p) => ({ ...p, password: "" }));
+                      setError(null);
+                    }}
                     placeholder='••••••••••••'
                     className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                   />
+                  {formErrors.password && (
+                    <p className='text-red-400 text-xs mt-1'>
+                      {formErrors.password}
+                    </p>
+                  )}
                   <button
                     type='button'
                     onClick={() => setShowPassword(!showPassword)}

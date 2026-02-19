@@ -13,6 +13,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const { register, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -43,15 +44,32 @@ export default function SignupPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
+    setError(null);
+  };
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formData.name.trim()) errors.name = "Please enter your full name.";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email))
+      errors.email = "Please enter a valid email address.";
+    if (formData.password.length < 8)
+      errors.password = "Password must be at least 8 characters.";
+    if (formData.password !== formData.confirm_password)
+      errors.confirm_password = "Passwords do not match";
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setFormErrors({});
 
-    if (formData.password !== formData.confirm_password) {
-      setError("Passwords do not match");
+    if (!validateForm()) {
       setIsLoading(false);
       return;
     }
@@ -81,7 +99,39 @@ export default function SignupPage() {
 
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Registration failed. Please try again.");
+      // Map API errors to user-friendly messages
+      if (err && err.code === 409) {
+        setFormErrors((prev) => ({
+          ...prev,
+          email: "An account with that email already exists.",
+        }));
+        setError(
+          'An account with that email already exists. Try signing in or use "Forgot password".',
+        );
+      } else if (err && err.code === 422 && err.errors) {
+        // validation errors from backend
+        const backendErrors: Record<string, string> = {};
+        Object.entries(err.errors).forEach(([key, val]) => {
+          const message = Array.isArray(val) ? (val[0] as string) : String(val);
+          // map backend field names to form field keys
+          if (key === "password_hash") backendErrors["password"] = message;
+          else if (key === "password_hash_confirmation")
+            backendErrors["confirm_password"] = message;
+          else if (key === "first_name" || key === "last_name")
+            backendErrors["name"] = message;
+          else backendErrors[key] = message;
+        });
+        setFormErrors((prev) => ({ ...prev, ...backendErrors }));
+        setError("Please fix the highlighted fields.");
+      } else if (
+        err &&
+        typeof err.message === "string" &&
+        /already exists|taken|duplicate/i.test(err.message)
+      ) {
+        setError("An account with that email already exists. Try signing in.");
+      } else {
+        setError(err?.message || "Registration failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -211,6 +261,9 @@ export default function SignupPage() {
                   required
                   className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                 />
+                {formErrors.name && (
+                  <p className='text-red-400 text-xs mt-1'>{formErrors.name}</p>
+                )}
               </div>
 
               {/* Email */}
@@ -231,6 +284,11 @@ export default function SignupPage() {
                   required
                   className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                 />
+                {formErrors.email && (
+                  <p className='text-red-400 text-xs mt-1'>
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               {/* Company */}
@@ -271,6 +329,11 @@ export default function SignupPage() {
                     required
                     className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                   />
+                  {formErrors.password && (
+                    <p className='text-red-400 text-xs mt-1'>
+                      {formErrors.password}
+                    </p>
+                  )}
                   <button
                     type='button'
                     onClick={() => setShowPassword(!showPassword)}
@@ -334,6 +397,11 @@ export default function SignupPage() {
                   required
                   className='w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20 transition-all hover:bg-white/[0.07]'
                 />
+                {formErrors.confirm_password && (
+                  <p className='text-red-400 text-xs mt-1'>
+                    {formErrors.confirm_password}
+                  </p>
+                )}
               </div>
 
               {/* Terms */}
